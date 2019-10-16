@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		B13679F723466E1200CC81D3 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B13679F623466E1200CC81D3 /* main.cpp */; };
+		B187BEAE2348382600C330DC /* lexico.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B187BEAC2348382600C330DC /* lexico.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -24,7 +24,8 @@
 
 /* Begin PBXFileReference section */
 		B13679F323466E1200CC81D3 /* AnalizadorLexico */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = AnalizadorLexico; sourceTree = BUILT_PRODUCTS_DIR; };
-		B13679F623466E1200CC81D3 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		B187BEAC2348382600C330DC /* lexico.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = lexico.cpp; sourceTree = "<group>"; };
+		B187BEAD2348382600C330DC /* lexico.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = lexico.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -57,7 +58,8 @@
 		B13679F523466E1200CC81D3 /* AnalizadorLexico */ = {
 			isa = PBXGroup;
 			children = (
-				B13679F623466E1200CC81D3 /* main.cpp */,
+				B187BEAC2348382600C330DC /* lexico.cpp */,
+				B187BEAD2348382600C330DC /* lexico.hpp */,
 			);
 			path = AnalizadorLexico;
 			sourceTree = "<group>";
@@ -118,7 +120,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B13679F723466E1200CC81D3 /* main.cpp in Sources */,
+				B187BEAE2348382600C330DC /* lexico.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
