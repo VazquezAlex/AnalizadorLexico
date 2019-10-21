@@ -27,6 +27,8 @@ int main() {
     int posicionPalabra = 0;
     int posicionDigito = 0;
     int largo = 0;
+
+	string tokens = [];
     
     // Ingreso de cadena.
     cout << "Ingresa la cadena a analizar: ";
