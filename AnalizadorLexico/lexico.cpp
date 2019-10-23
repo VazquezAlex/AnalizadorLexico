@@ -421,10 +421,7 @@ int main() {
 						num_token++; 
                         palabra = "";
                         palabraNormal = false;
-                    } else if(palabra == "(") {
-						estado = 0;
-						i--;
-					} else if(palabra == " ") {
+                    } else if(palabra == " ") {
                         palabraNormal = true;
                     } else if( palabra == "(" || ")" ){
                         palabraNormal = false;
