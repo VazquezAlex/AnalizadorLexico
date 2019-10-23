@@ -104,7 +104,7 @@ int main() {
                 } else if (cadenaconver[i] == '(') {
                     
                     estado = 21;
-                    i--;
+                    //i--;
                     
                 } else if (cadenaconver[i] == ')') {
                     
@@ -324,7 +324,8 @@ int main() {
                 
                 cout << "Token: Parentesis Abre" << endl;
                 tokens[num_token] = "parentesis abre";
-				num_token++; 
+				num_token++;
+				i--; 
                 estado = 0;
                 break;
             
@@ -425,8 +426,9 @@ int main() {
 						i--;
 					} else if(palabra == " ") {
                         palabraNormal = true;
-                    } else {
-                        palabraNormal = true;
+                    } else if( palabra == "(" || ")" ){
+                        palabraNormal = false;
+                        estado = 0;
                     }
                     
                 }
