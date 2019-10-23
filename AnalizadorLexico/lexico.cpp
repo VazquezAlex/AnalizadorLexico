@@ -199,7 +199,7 @@ int main() {
             case 7:
                 
                 // Estado de aceptacion multiplicaci√≥n.
-                cout << "Token: MultiplicaciÛn" << endl;
+                cout << "Token: Multiplicacion" << endl;
                 tokens[num_token] = "multiplicacion";
 				num_token++; 
                 estado = 0;
@@ -208,7 +208,7 @@ int main() {
             case 8:
                 
                 // Estado de aceptaci√≥n de divisi√≥n.
-                cout << "Token: DivisiÛn" << endl;
+                cout << "Token: Division" << endl;
                 tokens[num_token] = "division";
 				num_token++; 
                 estado = 0;
@@ -420,7 +420,10 @@ int main() {
 						num_token++; 
                         palabra = "";
                         palabraNormal = false;
-                    } else if(palabra == " ") {
+                    } else if(palabra == "(") {
+						estado = 0;
+						i--;
+					} else if(palabra == " ") {
                         palabraNormal = true;
                     } else {
                         palabraNormal = true;
@@ -487,7 +490,7 @@ int main() {
         }
     }
     
-    //for (int k= 0; k< num_token; k++) cout<< tokens[k] << endl;
+    for (int k= 0; k< num_token; k++) cout<< tokens[k] << endl;
 		
     
     for( int l=0; l< num_token; l++ ){
