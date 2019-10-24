@@ -107,7 +107,7 @@ int main() {
                     i--;
                     
                 } else if (cadenaconver[i] == ')') {
-                    
+                     
                     estado = 22;
                     i--;
                     
