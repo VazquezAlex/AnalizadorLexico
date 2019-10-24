@@ -325,7 +325,7 @@ int main() {
                 cout << "Token: Parentesis Abre" << endl;
                 tokens[num_token] = "parentesis abre";
 				num_token++;
-				i--; 
+				// i--; 
                 estado = 0;
                 break;
             
@@ -438,13 +438,16 @@ int main() {
 						num_token++; 
 						palabra = "";
                         estado = 0;
-                    } else {
-                        cout << "Token: Cadena (" << palabra << ")" << endl;
-                        tokens[num_token] = "cadena";
-                        palabra = "";
-					num_token++; 
-                        estado = 0;
-                    }
+						i--;
+                    } 
+					
+					// else {
+                    //     cout << "Token: Cadena (" << palabra << ")" << endl;
+                    //     tokens[num_token] = "cadena";
+                    //     palabra = "";
+					// 	num_token++; 
+                    //     estado = 0;
+                    // }
                         
                     // var hola entonces
                 }
