@@ -104,7 +104,7 @@ int main() {
                 } else if (cadenaconver[i] == '(') {
                     
                     estado = 21;
-                    //i--;
+                    i--;
                     
                 } else if (cadenaconver[i] == ')') {
                     
@@ -199,7 +199,7 @@ int main() {
             case 7:
                 
                 // Estado de aceptacion multiplicaci√≥n.
-                cout << "Token: Multiplicacion" << endl;
+                cout << "Token: MultiplicaciÛn" << endl;
                 tokens[num_token] = "multiplicacion";
 				num_token++; 
                 estado = 0;
@@ -208,7 +208,7 @@ int main() {
             case 8:
                 
                 // Estado de aceptaci√≥n de divisi√≥n.
-                cout << "Token: Division" << endl;
+                cout << "Token: DivisiÛn" << endl;
                 tokens[num_token] = "division";
 				num_token++; 
                 estado = 0;
@@ -324,8 +324,7 @@ int main() {
                 
                 cout << "Token: Parentesis Abre" << endl;
                 tokens[num_token] = "parentesis abre";
-				num_token++;
-				i--; 
+				num_token++; 
                 estado = 0;
                 break;
             
@@ -423,9 +422,8 @@ int main() {
                         palabraNormal = false;
                     } else if(palabra == " ") {
                         palabraNormal = true;
-                    } else if( palabra == "(" || ")" ){
-                        palabraNormal = false;
-                        estado = 0;
+                    } else{
+                        palabraNormal = true;
                     }
                     
                 }
@@ -488,8 +486,10 @@ int main() {
                 break;
         }
     }
+
+
     
-    for (int k= 0; k< num_token; k++) cout<< tokens[k] << endl;
+    //for (int k= 0; k< num_token; k++) cout<< tokens[k] << endl;
 		
     
     for( int l=0; l< num_token; l++ ){
