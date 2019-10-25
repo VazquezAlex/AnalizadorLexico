@@ -1,4 +1,3 @@
-//
 //  lexico.cpp
 //  AnalizadorSintáctico.
 //
@@ -487,22 +486,32 @@ int main() {
         }
     }
 
+    string lineacod[100] = {};
+
 
     
     //for (int k= 0; k< num_token; k++) cout<< tokens[k] << endl;
 		
-    
+    //Declaración
     for( int l=0; l< num_token; l++ ){
     	if(tokens[l] == "identificador"){
     		if(tokens[l+1] == "asignacion"){
     			if(tokens[l+2] == "digito"){
     				if(tokens[l+3] == "cierre"){
-    					cout<< "Declaracion de variable"<<endl;
+    					cout << "Declaracion de variable" << endl;
+                        lineacod[l] = "asignacion";
 					}
 				}
 			}
     		
-		}
+		} else if (tokens[l] == "digito" | tokens[l] == "identificador") {
+            if(tokens[l+1] == "suma" | tokens[1+1] == "resta"){
+                if(tokens[l+2] == "digito" | tokens[l] == "identificador"){
+                    cout << "Expresion";
+                    lineacod[l] = "expresion";
+                }
+            }
+        }
 	}
 
     return 1;
