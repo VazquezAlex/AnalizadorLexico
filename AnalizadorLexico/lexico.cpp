@@ -199,7 +199,7 @@ int main() {
             case 7:
                 
                 // Estado de aceptacion multiplicación.
-                cout << "Token: Multiplicaci�n" << endl;
+                cout << "Token: Multiplicacion" << endl;
                 tokens[num_token] = "multiplicacion";
 				num_token++; 
                 estado = 0;
@@ -208,7 +208,7 @@ int main() {
             case 8:
                 
                 // Estado de aceptación de división.
-                cout << "Token: Divisi�n" << endl;
+                cout << "Token: Division" << endl;
                 tokens[num_token] = "division";
 				num_token++; 
                 estado = 0;
@@ -438,16 +438,13 @@ int main() {
 						num_token++; 
 						palabra = "";
                         estado = 0;
-						i--;
-                    } 
-					
-					// else {
-                    //     cout << "Token: Cadena (" << palabra << ")" << endl;
-                    //     tokens[num_token] = "cadena";
-                    //     palabra = "";
-					// 	num_token++; 
-                    //     estado = 0;
-                    // }
+                    } else {
+                        cout << "Token: Cadena (" << palabra << ")" << endl;
+                        tokens[num_token] = "cadena";
+                        palabra = "";
+					num_token++; 
+                        estado = 0;
+                    }
                         
                     // var hola entonces
                 }
