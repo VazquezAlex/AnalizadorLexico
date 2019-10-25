@@ -371,11 +371,13 @@ int main() {
                     palabra = palabra + cadenaconver[j];
                 
                     if(palabra == "si") {
-                        cout << "Token: Palabra Reservada si" << endl;
+                        
+						cout << "Token: Palabra Reservada si" << endl;
                         tokens[num_token] = "si";
 						num_token++; 
                         palabra = "";
                         palabraNormal = false;
+
                     } else if(palabra == "cuandono") {
                     	
                         cout << "Token: Palabra Reservada cuandono" << endl;
