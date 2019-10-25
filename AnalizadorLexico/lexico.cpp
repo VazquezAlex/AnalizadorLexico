@@ -423,7 +423,11 @@ int main() {
                         palabraNormal = false;
                     } else if(palabra == " ") {
                         palabraNormal = true;
-                    } else{
+                    } else if(palabra == "(") {
+						palabraNormal = false;
+						i--;
+						estado = 0;
+					} else{
                         palabraNormal = true;
                     }
                     
@@ -492,29 +496,85 @@ int main() {
 
 
     
-    //for (int k= 0; k< num_token; k++) cout<< tokens[k] << endl;
+    // for (int k= 0; k< num_token; k++) cout<< tokens[k] << endl;
 		
     //Declaración
     for( int l=0; l< num_token; l++ ){
     	if(tokens[l] == "identificador"){
     		if(tokens[l+1] == "asignacion"){
-    			if(tokens[l+2] == "digito"){
-    				if(tokens[l+3] == "cierre"){
-    					cout << "Declaracion de variable" << endl;
-                        lineacod[l] = "asignacion";
+    			if(tokens[l+2] == "digito" || tokens[l+2] == "identificador"){
+					int cierrePos;
+					for(int j = l; j < num_token; j++){
+						if(tokens[j] == "cierre"){
+    						// cout << "Declaracion de variable" << endl;
+                        	// lineacod[l] = "asignacion";
+							cierrePos = j;
+						}
 					}
+
+					for(int m = l+2; m < cierrePos; m++) {
+						if((cierrePos - m) == 1) {
+
+							if (tokens[m] == "identificador" || tokens[m] == "digito") {
+							
+								lineacod[l] = "asignacion";
+								cout << "Asignacion" << endl;
+								break;
+
+							}
+
+						} else if((cierrePos - m) >= 3) {
+							if (tokens[m] == "identificador" || tokens[m] == "digito") {
+								if(tokens[m+1] == "suma" || tokens[m+1] == "multiplicacion" || tokens[m+1] == "division" || tokens[m+1] == "resta") {
+									if(tokens[m+2] == "identificador" || tokens[m+2] == "digito"){
+										lineacod[l] = "asignacion";
+										cout << "Asignacion" << endl;
+										m = m+2;
+										break;
+									} else {
+										cout << "Error expresion no valida" << endl;
+									} 
+								} else {
+									cout << "Error expresion no valida" << endl;
+								} 
+							}
+						} else if((cierrePos - m) == 2 || ((cierrePos - m) % 2) == 0) {
+							if (tokens[m] == "identificador") {
+								if(tokens[m+1] == "decremento" || tokens[m+1] == "incremento") {
+									lineacod[l] = "asignacion";
+									cout << "Asignacion" << endl;
+									m = m+1;
+								} else {
+									cout << "Error expresion no valida" << endl;
+								}
+							} else if (tokens[m] == "suma" || tokens[m] == "multiplicacion" || tokens[m] == "division" || tokens[m] == "resta") {
+								if (tokens[m+1] == "identificador" | tokens[m+1] == "digito"){
+									lineacod[l] = "asignacion";
+									cout << "Asignacion" << endl;
+									m = m+1;
+								}
+							} else {
+								cout << "Error expresion no valida" << endl;
+							}
+						}
+					}
+    				
 				}
 			}
     		
-		} else if (tokens[l] == "digito" | tokens[l] == "identificador") {
-            if(tokens[l+1] == "suma" | tokens[1+1] == "resta"){
-                if(tokens[l+2] == "digito" | tokens[l] == "identificador"){
-                    cout << "Expresion";
-                    lineacod[l] = "expresion";
-                }
-            }
-        }
-	}
+		} 
+
+	}	
+		
+		// else if (tokens[l] == "digito" | tokens[l] == "identificador") {
+        //     if(tokens[l+1] == "suma" | tokens[1+1] == "resta"){
+        //         if(tokens[l+2] == "digito" | tokens[l] == "identificador"){
+        //             cout << "Expresion";
+        //             lineacod[l] = "expresion";
+        //         }
+        //     }
+        // }
+	
 
     return 1;
 }
