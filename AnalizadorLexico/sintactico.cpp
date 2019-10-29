@@ -37,8 +37,10 @@ int main() {
     cout << "Ingresa la cadena a analizar: ";
     cin >> cadena;
     
+	// Convertir la cadena para trabajarla en cada caracter.
     char *cadenaconver = strdup(cadena.c_str());
     
+	// Ciclo para analizar cada caracter de cadena.
     for (int i = 0; i < cadena.length(); i++) {
         
         switch (estado) {
@@ -48,14 +50,16 @@ int main() {
                 if (cadenaconver[i] == '+') {
                     estado = 1;
                     if(cadenaconver[i+1] == '+') {
+						// Mandar a estado de aceptación de incremento (Estado 2).
                         estado = 2;
                     } else {
+						// Mandar a estado de suma, y regresar la cadena una posición.
                         estado = 3;
                         i--;
                     }
                     
                 } else if(cadenaconver[i] == '-') {
-                  
+					
                     estado = 4;
                     
                     if(cadenaconver[i+1] == '-') {
@@ -115,7 +119,19 @@ int main() {
                     estado = 23;
                     i--;
                     
-                } else if(isalpha(cadenaconver[i])) {
+                } else if(cadenaconver[i] == '{') {
+
+					cout << "Token: Llave Abre" << endl;
+					tokens[num_token] = "Llave abre";
+					num_token++;
+
+				}  else if(cadenaconver[i] == '}') {
+
+					cout << "Token: Llave Cierra" << endl;
+					tokens[num_token] = "llave cierra";
+					num_token++;
+
+				}  else if(isalpha(cadenaconver[i])) {
                     estado = 24;
                     posicionPalabra = i;
                     i--;
@@ -353,12 +369,9 @@ int main() {
 					palabra = ""; 
                     estado = 0;
                     
-				} else if(isalpha(cadenaconver[i+2]) or isdigit(cadenaconver[i+2])) {
-					
+				} else if((isalpha(cadenaconver[i+2]) or isdigit(cadenaconver[i+2])) && (isalpha(cadenaconver[i+1]) or isdigit(cadenaconver[i+1]))) {
                     estado = 24;
-                    
                 } else {
-                	
                     estado = 25;
                 } 
                 
@@ -368,7 +381,16 @@ int main() {
                 
                 for (int j = posicionPalabra; j < i+1; j++) {
                     
-                    palabra = palabra + cadenaconver[j];
+                    
+					if(isalpha(cadenaconver[j])) {
+						palabra = palabra + cadenaconver[j];						
+					} else {
+						palabra = palabra;
+						i--;
+						estado = 0;
+					}
+					
+					
                 
                     if(palabra == "si") {
                         
@@ -377,6 +399,7 @@ int main() {
 						num_token++; 
                         palabra = "";
                         palabraNormal = false;
+						i++;
 
                     } else if(palabra == "cuandono") {
                     	
@@ -385,6 +408,7 @@ int main() {
 						num_token++; 
                         palabra = "";
                         palabraNormal = false;
+						i+= 7;
                         
                     } else if(palabra == "entonces") {
                     	
@@ -394,6 +418,7 @@ int main() {
 						num_token++; 
                         palabra = "";
                         palabraNormal = false;
+						i+= 7;
                         
                     } else if(palabra == "escribir") {
                     	
@@ -402,29 +427,34 @@ int main() {
 						num_token++; 
                         palabra = "";
                         palabraNormal = false;
+						i+= 7;
                         
                     } else if(palabra == "leer") {
+
                         cout << "Token: Palabra Reservada leer" << endl;
                         tokens[num_token] = "leer";
 						num_token++; 
                         palabra = "";
-                        palabraNormal = false;
-                    } else if(palabra == "comienzo") {
+                	    palabraNormal = false;
+						i+= 3;
+
+					} else if(palabra == "comienzo") {
                         cout << "Token: Palabra Reservada comienzo" << endl;
                         tokens[num_token] = "comienzo";
 						num_token++; 
                         palabra = "";
                         palabraNormal = false;
+						i+= 7;
                     } else if(palabra == "fin") {
                         cout << "Token: Palabra Reservada fin" << endl;
                         tokens[num_token] = "fin";
 						num_token++; 
                         palabra = "";
                         palabraNormal = false;
-                    } else if(palabra == " ") {
-                        palabraNormal = true;
-                    } else if(palabra == "(") {
+						i+= 2;
+                    } else if(palabra == "(" | palabra == ")") {
 						palabraNormal = false;
+						palabra = "";
 						i--;
 						estado = 0;
 					} else{
@@ -435,19 +465,21 @@ int main() {
             
                 if(palabraNormal) {
                         
-                    if(palabra[0] != '_' ) {        // and isdigit(palabra.at(0)
+                    if(palabra[0] != '_' && palabra.length() > 0) {        // and isdigit(palabra.at(0)
                         cout << "Token: Identificador: " << palabra << endl;
                         tokens[num_token] = "identificador";
 						num_token++; 
 						palabra = "";
                         estado = 0;
-                    } else {
-                        cout << "Token: Cadena (" << palabra << ")" << endl;
-                        tokens[num_token] = "cadena";
-                        palabra = "";
-					num_token++; 
-                        estado = 0;
-                    }
+                    } 
+					
+					// else if() {
+                    //     cout << "Token: Cadena (" << palabra << ")" << endl;
+                    //     tokens[num_token] = "cadena";
+                    //     palabra = "";
+					// 	num_token++; 
+                    //     estado = 0;
+                    // }
                         
                     // var hola entonces
                 }
