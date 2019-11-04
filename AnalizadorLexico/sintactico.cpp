@@ -252,7 +252,7 @@ int main() {
                 
                 // Estado de acpetación de la igualación;
                 cout << "Token: Comparacion" << endl;
-                tokens[num_token][0] = "comparacion";
+                tokens[num_token][0] = "condicion";
 				tokens[num_token][1] = "==";
 				num_token++; 
                 estado = 0;
@@ -284,7 +284,7 @@ int main() {
             case 13:
                 
                 cout << "Token: Menor o Igual" << endl;
-                tokens[num_token][0] = "menor_igual";
+                tokens[num_token][0] = "condicion";
 				tokens[num_token][1] = "<=";
 				num_token++; 
                 estado = 0;
@@ -293,7 +293,7 @@ int main() {
             case 14:
                 
                 cout << "Token: Menor que" << endl;
-                tokens[num_token][0] = "menor_que";
+                tokens[num_token][0] = "condicion";
 				tokens[num_token][1] = "<";
 				num_token++; 
                 estado = 0;
@@ -314,7 +314,7 @@ int main() {
             case 16:
                 
                 cout << "Token: Mayor que" << endl;
-                tokens[num_token][0] = "mayor_que";
+                tokens[num_token][0] = "condicion";
 				tokens[num_token][1] = ">";
 				num_token++; 
                 estado = 0;
@@ -323,7 +323,7 @@ int main() {
             case 17:
                 
                 cout << "Token: Mayor o Igual" << endl;
-                tokens[num_token][0] = "mayor_igual";
+                tokens[num_token][0] = "condicion";
 				tokens[num_token][1] = ">=";
 				num_token++; 
                 estado = 0;
@@ -338,7 +338,7 @@ int main() {
             case 19:
                 
                 cout << "Token: Asignacion" << endl;
-                tokens[num_token][0] = "asignacion";
+                tokens[num_token][0] = "condicion";
 				tokens[num_token][1] = ":=";
 				num_token++;
                 estado = 0;
@@ -557,9 +557,8 @@ int main() {
 
     string lineacod[100] = {};
 
-
     
-    // for (int k= 0; k< num_token; k++) cout<< tokens[k] << endl;
+    for (int k= 0; k< num_token; k++) cout<< tokens[k][0] << endl;
 		
     //Declaración
     for( int l=0; l< num_token; l++ ){
@@ -628,6 +627,26 @@ int main() {
 		} 
 
 	}	
+
+	for(int j = 0; j < num_token ; j++) {
+
+		if(tokens[j][0] == "si") {
+			if(tokens[j+1][0] == "parentesis_abre") {
+				if(tokens[j+2][0] == "identificador") {
+					if(tokens[j+3][0] == "condicion") {
+						if(tokens[j+4][0] == "digito" or tokens[j+4][0] == "identificador") {
+							if(tokens[j+5][0] == "parentesis_cierra") {
+								if(tokens[j+6][0] == "llave_abre") {
+									cout << "Aquí dentro va una expresión" << endl;
+								}
+							}
+						}
+ 					}
+				}
+			}
+		}
+
+	}
 		
 		// else if (tokens[l] == "digito" | tokens[l] == "identificador") {
         //     if(tokens[l+1] == "suma" | tokens[1+1] == "resta"){
@@ -637,6 +656,8 @@ int main() {
         //         }
         //     }
         // }
+	
+
 	
 
     return 1;
