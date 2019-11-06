@@ -338,7 +338,7 @@ int main() {
             case 19:
                 
                 cout << "Token: Asignacion" << endl;
-                tokens[num_token][0] = "condicion";
+                tokens[num_token][0] = "asignacion";
 				tokens[num_token][1] = ":=";
 				num_token++;
                 estado = 0;
@@ -558,7 +558,7 @@ int main() {
     string lineacod[100] = {};
 
     
-    for (int k= 0; k< num_token; k++) cout<< tokens[k][0] << endl;
+    // for (int k= 0; k< num_token; k++) cout<< tokens[k][0] << endl;
 		
     //Declaración
     for( int l=0; l< num_token; l++ ){
@@ -638,6 +638,11 @@ int main() {
 							if(tokens[j+5][0] == "parentesis_cierra") {
 								if(tokens[j+6][0] == "llave_abre") {
 									cout << "Aquí dentro va una expresión" << endl;
+									for(int k = j+6; j < num_token; j++) {
+										if(tokens[k][0] == "llave_cierra") {
+											cout << "Cierre if: " << k << endl;
+										}
+									}
 								}
 							}
 						}
