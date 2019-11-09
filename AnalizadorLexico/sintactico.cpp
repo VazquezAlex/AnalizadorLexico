@@ -638,7 +638,7 @@ int main() {
 							if(tokens[j+5][0] == "parentesis_cierra") {
 								if(tokens[j+6][0] == "llave_abre") {
 									cout << "Aquí dentro va una expresión" << endl;
-									for(int k = j+6; j < num_token; j++) {
+									for(int k = j+6; j < num_token; k++) {
 										if(tokens[k][0] == "llave_cierra") {
 											cout << "Cierre if: " << k << endl;
 										}
