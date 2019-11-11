@@ -670,7 +670,7 @@ bool si(string tokens[50][2], int num_token) {
 		} else if(tokens_verificar[a][0] == "llave_cierra") {
 			cout << "Entrando al segundo if" << endl;
 			// Verificar si es un if, o mientras.
-			bool ver_si = si(tokens, num_token, tokens_verificar, num_tokens_verificar);
+			bool ver_si = si(tokens, num_token);
 			if(ver_si) {
 				cout << "Si recursivo" << endl;
 			}
