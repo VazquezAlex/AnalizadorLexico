@@ -17,7 +17,7 @@ using namespace std;
 
 // Declaració de funciones.
 bool asignacion(int num_token, string tokens[50][2]);
-void crear_arreglo_asignacion(int inicial, int final, string tokens[50][2]);
+string** crear_arreglo_asignacion(int inicial, int final, string tokens[50][2]);
 bool si(string tokens[50][2], int num_token);
 
 int main() {
@@ -596,8 +596,8 @@ bool asignacion(int num_token, string tokens[50][2]) {
 }
 
 
-void crear_arreglo_asignacion(int inicial, int final, string tokens[50][2]){
-	string asig[50][2];
+string** crear_arreglo_asignacion(int inicial, int final, string tokens[50][2]){
+	// string** asig = new string**[50][2];
 	int size = final-inicial;
 	for(int i = 0; i <= size; i++) {
 		asig[i][0] = tokens[inicial][0];
@@ -605,10 +605,12 @@ void crear_arreglo_asignacion(int inicial, int final, string tokens[50][2]){
 		// cout << "Desde funcion: " << asig[i][0] << endl;
 		inicial++;
 	}
-	bool asignacion_valida = asignacion(size+1, tokens);
-	if(asignacion_valida) {
-		cout << "Es una asignacion" << endl;
-	} 
+
+
+	// bool asignacion_valida = asignacion(size+1, tokens);
+	// if(asignacion_valida) {
+	// 	cout << "Es una asignacion" << endl;
+	// } 
 
 }
 
@@ -662,12 +664,25 @@ bool si(string tokens[50][2], int num_token) {
 	}
 
 	int inicio_asignacion = 0;
+	string asig[50][2];
+
 	for(int a = 0; a < num_tokens_verificar; a++) {
 		if(tokens_verificar[a][0] == "cierre") {
 			// Funcion cree arreglo, desde inicio - cierre
-			crear_arreglo_asignacion(inicio_asignacion, a, tokens_verificar);
+			//crear_arreglo_asignacion(inicio_asignacion, a, tokens_verificar);
+
+			int size = a-inicio_asignacion;
+			for(int i = 0; i <= size; i++) {
+				asig[i][0] = tokens[inicio_asignacion][0];
+				asig[i][1] = tokens[inicio_asignacion][1];
+				// cout << "Desde funcion: " << asig[i][0] << endl;
+				inicio_asignacion++;
+			}
+
 			inicio_asignacion = a+1;
+
 		} else if(tokens_verificar[a][0] == "llave_cierra") {
+			
 			cout << "Entrando al segundo if" << endl;
 			// Verificar si es un if, o mientras.
 			bool ver_si = si(tokens, num_token);
