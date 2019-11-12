@@ -422,7 +422,7 @@ int main() {
 						palabra = "";
 						i--;
 						estado = 0;
-					} else{
+					} else {
 						palabraNormal = true;
 					}
 					
@@ -430,7 +430,7 @@ int main() {
 			
 				if(palabraNormal) {
 						
-					if(palabra[0] != '_' && palabra.length() > 0) {        // and isdigit(palabra.at(0)
+					if(palabra[0] != '_' && palabra.length() > 0) {
 						// cout << "Token: Identificador: " << palabra << endl;
 						tokens[num_token][0] = "identificador";
 						tokens[num_token][1] = palabra;	
@@ -491,7 +491,7 @@ int main() {
 
 bool asignacion(int num_token, string tokens[50][2]) {
 
-	if(tokens[0][0] == "si") {
+	if(tokens[0][0] == "si" or tokens[0][0] == "mientras") {
 		return false;
 	}
 
@@ -578,7 +578,6 @@ bool si(string tokens[50][2], int num_token) {
 			var_aum++;
 			if(tokens[j+var_aum][0] == "parentesis_abre") {
 				var_aum++;
-				num_par++;
 				while(tokens[j+var_aum][0] == "parentesis_abre") {
 					num_par++;
 					var_aum++;
@@ -588,11 +587,10 @@ bool si(string tokens[50][2], int num_token) {
 					var_aum++;
 					if(tokens[j+var_aum][0] == "condicion") {
 						var_aum++;
-						if(tokens[j+var_aum][0] == "digito" or tokens[j+4][0] == "identificador") {
+						if(tokens[j+var_aum][0] == "digito" or tokens[j+var_aum][0] == "identificador") {
 							var_aum++;
 							if(tokens[j+var_aum][0] == "parentesis_cierra") {
 								var_aum++;
-								num_par--;
 								while(tokens[j+var_aum][0] == "parentesis_cierra") {
 									num_par--;
 									var_aum++;
@@ -608,12 +606,18 @@ bool si(string tokens[50][2], int num_token) {
 								}
 								if(tokens[j+var_aum][0] == "llave_abre") {
 									var_aum++;
-									num_llaves++;
+									while(tokens[j+var_aum][0] == "llave_abre") {
+										num_llaves++;
+										var_aum++;
+									}
 									// Ciclo de llaves.
-									inicio_expresion = j+var_aum; // j+var_aumento;
+									inicio_expresion = j+var_aum;
 									for(int k = j+var_aum; k < num_token; k++) {
 										if(tokens[k][0] == "llave_cierra") {
-											num_llaves--;
+											while(tokens[j+var_aum][0] == "llave_cierra") {
+												num_llaves--;
+												var_aum++;
+											}
 											// cout << "Cierre if: " << k << endl;
 											if(num_llaves == 0) {
 												termino_expresion = k;
@@ -626,27 +630,32 @@ bool si(string tokens[50][2], int num_token) {
 												cout << "Error 103: Numero de llaves incorrecto. " ;
 												if(num_llaves > 0) {
 													cout << "Existe un numero mayor de {, en la posicion " << j+var_aum << endl;
+												} else if(num_llaves < 0) {
+													cout << "Existe un numero mayor de }, en la posicion " << j+var_aum << endl;
 												}
+												return false;
 											}
 										}
 									}
-								}
+								} 
 							}
-						} else {
-							// Error cuando no recibe un dígito o identificador despues de condición.
-							cout << "Error 100: Parametro No válido en la posicion " << j+var_aum << endl;
-						}
+						} 
  					} else {
 						// Error cuando la condición no sea válida.
-						cout << "Error 101: Se espera una condición en vez de: " << tokens[j+var_aum+1][1] << endl;
+						cout << "Error 101: Se espera una condición, y se obtuvo " << tokens[j+var_aum][1] 
+							 << " en la posicion " << j+var_aum << endl;
+						return false;
 					}
 				} else {
 					// Error cuando el primer parámetro no sea válido.
-					cout << "Error 100: Parametro No válido en la posicion " << j+var_aum << endl;
- 				}
+					cout << "Error 100: Parametro no válido en la posicion " 
+						 << j+var_aum << " se espera una variable y se obtuvo " << tokens[j+var_aum][1] << endl;
+					return false;
+				}
 			} else {
-				// Error cuando no hay un ( despues de si.
-				cout << "Error 102: Se esperaba un ( despues de la funcion, en posicion " << j+var_aum << ", se recibio un " << tokens[j+var_aum][1] << endl;
+				// Error, falta ( al comienzo.
+				cout << "Error 102: Falta parentesis ( despues de si, en posicion: " << endl;
+				return false;
 			}
 		}
 
@@ -686,6 +695,9 @@ bool si(string tokens[50][2], int num_token) {
 					break;
 				}
 			}
+		} else if(tokens[inicio_asignacion][0] == "mientras") {
+			cout << "We fpund a mientras" << endl;
+
 		}
 		inicio_asignacion++;
 	}
@@ -741,18 +753,19 @@ bool mientras(string tokens[50][2], int num_token) {
 						}
 					} else {
 						// Error cuando la condición no sea válida.
-						cout << "Error 101: Se espera una condición en vez de: " << tokens[i+var_aum+1][1] << endl;
-						break;
+						cout << "Error 101: Se espera una condición en vez de: " << tokens[i+var_aum+1][1] 
+							 << " en la posicion " << i+var_aum << endl;
+						return false;
 					}
 				} else {
 					// Error cuando el primer parámetro no sea válido.
 					cout << "Error 100: Parametro No Válido" << endl;
-					break;
+					return false;
 				}
 			} else {
 				// Error si no recibió un parentesís despues de mientras.
 				cout << "Error 102: Se esperaba un ( despues de la funcion, en posicion " << i+var_aum << ", se recibio un " << tokens[i+var_aum][0] << endl;
-				break;
+				return false;
 			}
 		}
 	}
