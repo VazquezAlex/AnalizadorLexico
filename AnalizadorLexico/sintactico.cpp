@@ -139,7 +139,7 @@ int main() {
 				estado = 0;
 			case 3:
 				// Estado de aceptación de suma.
-				cout << "Token: Suma" << endl;
+				// cout << "Token: Suma" << endl;
 				tokens[num_token][0] = "suma";
 				tokens[num_token][1] = "+";
 				num_token++;
@@ -598,7 +598,7 @@ bool si(string tokens[50][2], int num_token) {
 									var_aum++;
 								}
 								if(num_par != 0) {
-									cout << "Error 103: Cantidad de parentesis incorrecta. " << endl;
+									cout << "Error 104: Cantidad de parentesis incorrecta. " << endl;
 									if(num_par > 0) {
 										cout << "Existe un ( de más" << endl;
 									} else if(num_par < 0) {
@@ -623,7 +623,7 @@ bool si(string tokens[50][2], int num_token) {
 												cout << "if valido" << endl;
 												break;
 											} else {
-												cout << "Error : Numero de llaves incorrecto. " ;
+												cout << "Error 103: Numero de llaves incorrecto. " ;
 												if(num_llaves > 0) {
 													cout << "Existe un numero mayor de {, en la posicion " << j+var_aum << endl;
 												}
@@ -687,7 +687,11 @@ bool si(string tokens[50][2], int num_token) {
 		inicio_asignacion++;
 	}
 
-	if(valido) return true;
+	if(valido) {
+		return true;
+	} else {
+		return false;
+	}
 
 }
 
