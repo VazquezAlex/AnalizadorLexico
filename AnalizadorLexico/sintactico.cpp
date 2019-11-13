@@ -5,6 +5,10 @@
 //  Copyright © 2019 Alejandro Vazquez. All rights reserved.
 //
 
+// TODO: Agregar error 106, cuando pongan un caracter al azar en la cadena.
+// TODO: Agregar do-while, manejar con error 106, solo modificar el texto.
+
+
 #include "lexico.hpp"
 #include <iostream>
 #include <ctype.h>
@@ -476,14 +480,12 @@ int main() {
 
 	string lineacod[100] = {};
 
-	// bool ver_si = si(tokens, num_token);
-	// bool ver_mientras = mientras(tokens, num_token);
-
-
 	if(tokens[0][0] == "si") {
 		bool ver_si = si(tokens, num_token);
 	} else if(tokens[0][0] == "mientras") {
 		bool ver_mientras = mientras(tokens, num_token);
+	} else {
+		cout << "Error 106: Expresion no valida" << endl;
 	}
 		
 	return 1;
@@ -683,6 +685,7 @@ bool si(string tokens[50][2], int num_token) {
 
 
 		} else if(tokens_verificar[inicio_asignacion][0] == "identificador") {
+			cout << tokens_verificar[inicio_asignacion][0] << endl;
 			int cierre_asignacion;
 			for(int m = 0; m < num_tokens_verificar; m++) {
 				if(tokens_verificar[m][0] == "cierre") {
@@ -724,6 +727,10 @@ bool mientras(string tokens[50][2], int num_token) {
 			var_aum++;
 			if(tokens[i+var_aum][0] == "parentesis_abre") {
 				var_aum++;
+				while(tokens[i+var_aum][0] == "parentesis_abre") {
+					num_par++;
+					var_aum++;
+				}
 				if(tokens[i+var_aum][0] == "identificador") {
 					var_aum++;
 					if(tokens[i+var_aum][0] == "condicion") {
@@ -732,10 +739,24 @@ bool mientras(string tokens[50][2], int num_token) {
 							var_aum++;
 							if(tokens[i+var_aum][0] == "parentesis_cierra") {
 								var_aum++;
+								while(tokens[i+var_aum][0] == "parentesis_cierra") {
+									num_par--;
+									var_aum++;
+								}
+								if(num_par != 0) {
+									cout << "Error 104: Cantidad de parentesis incorrecta. " << endl;
+									if(num_par > 0) {
+										cout << "Existe un ( de más" << endl;
+									} else if(num_par < 0) {
+										cout << "Existe un ) de más" << endl;
+									}
+									return false;
+								}
 								if(tokens[i+var_aum][0] == "llave_abre") {
 									var_aum++;
 									num_llaves++;
 									inicio_expresion = i+var_aum;
+									// cout << "Inicio dce la expresion: " << tokens[inicio_expresion][1] << endl;
 									for(int k = i+var_aum; k < num_token; k++) {
 										if(tokens[k][0] == "llave_cierra") {
 											num_llaves--;
@@ -744,6 +765,9 @@ bool mientras(string tokens[50][2], int num_token) {
 												termino_expresion = k;
 												valido = true;
 												cout << "Mientras valido" << endl;
+												// cout << "Cierre de la expresion: " << tokens[termino_expresion][1] << endl;
+												i = num_token;
+												break;
 											} else {
 												cout << "Error 103: Numero de llaves incorrecto. " ;
 												if(num_llaves > 0) {
@@ -756,17 +780,26 @@ bool mientras(string tokens[50][2], int num_token) {
 										}
 									}
 								}
+							} else {
+								// Error cuando no hay parentesis que cierra.
+								cout << "Error 105: Uso de parentesis incorrecto, se esperaba ')' en " << i+var_aum 
+									<< " y se recibio " << tokens[i+var_aum][1] << endl;
+								return false;
 							}
+						}  else {
+							cout << "Error 100: Parametro no válido en la posicion " 
+							 << i+var_aum << " se espera una variable y se obtuvo " << tokens[i+var_aum][1] << endl;
+							return false;
 						}
 					} else {
 						// Error cuando la condición no sea válida.
-						cout << "Error 101: Se espera una condición en vez de: " << tokens[i+var_aum+1][1] 
+						cout << "Error 101: Se espera una condición, y se obtuvo " << tokens[i+var_aum][1] 
 							 << " en la posicion " << i+var_aum << endl;
 						return false;
 					}
 				} else {
-					// Error cuando el primer parámetro no sea válido.
-					cout << "Error 100: Parametro No Válido" << endl;
+					cout << "Error 100: Parametro no válido en la posicion " 
+						 << i+var_aum << " se espera una variable y se obtuvo " << tokens[i+var_aum][1] << endl;
 					return false;
 				}
 			} else {
@@ -786,14 +819,44 @@ bool mientras(string tokens[50][2], int num_token) {
 		a++;
 	}
 
-	bool asig_valid = asignacion(num_tokens_verificar, tokens_verificar);
+	// bool asig_valid = asignacion(num_tokens_verificar, tokens_verificar);
 
-	if(asig_valid) {
-		cout << "Asignacion correcta" << endl;
-	} else if(si(tokens_verificar, num_tokens_verificar))  {
-			// cout << "Si valido" << endl;
-	} else if(mientras(tokens_verificar, num_tokens_verificar)) {
-		// cout << "Mientras Valido" << endl;
+	// if(asignacion(num_tokens_verificar, tokens_verificar)) {
+	// 	cout << "Asignacion correcta" << endl;
+	// } else if(si(tokens_verificar, num_tokens_verificar))  {
+	// 		// cout << "Si valido" << endl;
+	// } else if(mientras(tokens_verificar, num_tokens_verificar)) {
+	// 	// cout << "Mientras Valido" << endl;
+	// }
+
+	int inicio_asignacion = 0;
+	string asig[50][2];
+
+	for(int a = 0; a < num_tokens_verificar; a++) {
+		if(tokens_verificar[inicio_asignacion][0] == "si") {
+			
+			int cierre_asignacion;
+			bool si_valido = si(tokens_verificar, num_tokens_verificar);
+
+
+		} else if(tokens_verificar[inicio_asignacion][0] == "identificador") {
+			// cout << tokens_verificar[inicio_asignacion][0] << endl;
+			int cierre_asignacion;
+			for(int m = 0; m < num_tokens_verificar; m++) {
+				if(tokens_verificar[m][0] == "cierre") {
+					cierre_asignacion = m;
+					a = m;
+					bool asignacion_valida = asignacion(m+1, tokens_verificar);
+					if(asignacion_valida) {
+						cout << "Asignación Válida" << endl;
+					}
+					break;
+				}
+			}
+		} else if(tokens_verificar[inicio_asignacion][0] == "mientras") {
+			bool mientras_valido = mientras(tokens_verificar, num_tokens_verificar);
+		}
+		inicio_asignacion++;
 	}
 	
 	return valido;
