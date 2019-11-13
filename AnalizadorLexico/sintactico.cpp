@@ -695,9 +695,8 @@ bool si(string tokens[50][2], int num_token) {
 					break;
 				}
 			}
-		} else if(tokens[inicio_asignacion][0] == "mientras") {
-			cout << "We fpund a mientras" << endl;
-
+		} else if(tokens_verificar[inicio_asignacion][0] == "mientras") {
+			bool mientras_valido = mientras(tokens_verificar, num_tokens_verificar);
 		}
 		inicio_asignacion++;
 	}
@@ -745,6 +744,14 @@ bool mientras(string tokens[50][2], int num_token) {
 												termino_expresion = k;
 												valido = true;
 												cout << "Mientras valido" << endl;
+											} else {
+												cout << "Error 103: Numero de llaves incorrecto. " ;
+												if(num_llaves > 0) {
+													cout << "Existe un numero mayor de {, en la posicion " << i+var_aum << endl;
+												} else if(num_llaves < 0) {
+													cout << "Existe un numero mayor de }, en la posicion " << i+var_aum << endl;
+												}
+												return false;
 											}
 										}
 									}
@@ -784,9 +791,9 @@ bool mientras(string tokens[50][2], int num_token) {
 	if(asig_valid) {
 		cout << "Asignacion correcta" << endl;
 	} else if(si(tokens_verificar, num_tokens_verificar))  {
-			cout << "Si valido" << endl;
+			// cout << "Si valido" << endl;
 	} else if(mientras(tokens_verificar, num_tokens_verificar)) {
-		cout << "Mientras Valido" << endl;
+		// cout << "Mientras Valido" << endl;
 	}
 	
 	return valido;
