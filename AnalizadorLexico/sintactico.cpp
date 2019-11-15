@@ -5,7 +5,6 @@
 //  Copyright © 2019 Alejandro Vazquez. All rights reserved.
 //
 
-// TODO: Agregar error 106, cuando pongan un caracter al azar en la cadena.
 // TODO: Agregar do-while, manejar con error 106, solo modificar el texto.
 
 
@@ -330,7 +329,7 @@ int main() {
 			
 			case 24:
 				if(cadena.length()==1){
-					cout << "Token: Identificador" << endl;
+					// cout << "Token: Identificador" << endl;
 					tokens[num_token][0] = "identificador";
 					tokens[num_token][1] = palabra;
 					num_token++;
@@ -484,6 +483,8 @@ int main() {
 		bool ver_si = si(tokens, num_token);
 	} else if(tokens[0][0] == "mientras") {
 		bool ver_mientras = mientras(tokens, num_token);
+	} else if(tokens[0][0] == "identificador") {
+		bool ver_asignacion = asignacion(num_token, tokens);
 	} else {
 		cout << "Error 106: Expresion no valida" << endl;
 	}
@@ -497,62 +498,91 @@ bool asignacion(int num_token, string tokens[50][2]) {
 		return false;
 	}
 
-	for( int l=0; l < num_token; l++ ){
-		if(tokens[l][0] == "identificador"){
-			if(tokens[l+1][0] == "asignacion"){
-				if(tokens[l+2][0] == "digito" || tokens[l+2][0] == "identificador"){
-					int cierrePos;
-					for(int j = l; j < num_token; j++){
-						if(tokens[j][0] == "cierre"){
-							cierrePos = j;
-						}
-					}
+	// for( int l=0; l < num_token; l++ ){
+	// 	if(tokens[l][0] == "identificador"){
+	// 		if(tokens[l+1][0] == "asignacion"){
+	// 			if(tokens[l+2][0] == "digito" || tokens[l+2][0] == "identificador"){
+	// 				int cierrePos;
+	// 				for(int j = l; j < num_token; j++){
+	// 					if(tokens[j][0] == "cierre"){
+	// 						cierrePos = j;
+	// 					}
+	// 				}
 
-					for(int m = l+2; m < cierrePos; m++) {
-						if((cierrePos - m) == 1) {
-							if (tokens[m][0] == "identificador" || tokens[m][0] == "digito") {
-								return true;
-								break;
-							}
-						} else if((cierrePos - m) >= 3) {
-							if (tokens[m][0] == "identificador" || tokens[m][0] == "digito") {
-								if(tokens[m+1][0] == "suma" || tokens[m+1][0] == "multiplicacion" || tokens[m+1][0] == "division" || tokens[m+1][0] == "resta") {
-									if(tokens[m+2][0] == "identificador" || tokens[m+2][0] == "digito"){
-										return true;
-										m = m+2;
-										break;
-									} else {
-										cout << "Error expresion no valida" << endl;
-									} 
-								} else {
-									cout << "Error expresion no valida" << endl;
-								} 
-							}
-						} else if((cierrePos - m) == 2 || ((cierrePos - m) % 2) == 0) {
-							if (tokens[m][0] == "identificador") {
-								if(tokens[m+1][0] == "decremento" || tokens[m+1][0] == "incremento") {
-									return true;
-									m = m+1;
-								} else {
-									cout << "Error expresion no valida" << endl;
-								}
-							} else if (tokens[m][0] == "suma" || tokens[m][0] == "multiplicacion" || tokens[m][0] == "division" || tokens[m][0] == "resta") {
-								if (tokens[m+1][0] == "identificador" | tokens[m+1][0] == "digito"){
-									return true;
-									m = m+1;
-								}
-							} else {
-								cout << "Error expresion no valida" << endl;
-								return false;
-							}
-						}
-					}	
-				}
-			}
+	// 				for(int m = l+2; m < cierrePos; m++) {
+	// 					if((cierrePos - m) == 1) {
+	// 						if (tokens[m][0] == "identificador" || tokens[m][0] == "digito") {
+	// 							cout << "asignacion valida" << endl;
+	// 							return true;
+	// 							break;
+	// 						}
+	// 					} else if((cierrePos - m) >= 3) {
+	// 						if (tokens[m][0] == "identificador" || tokens[m][0] == "digito") {
+	// 							if(tokens[m+1][0] == "suma" || tokens[m+1][0] == "multiplicacion" || tokens[m+1][0] == "division" || tokens[m+1][0] == "resta") {
+	// 								if(tokens[m+2][0] == "identificador" || tokens[m+2][0] == "digito"){
+	// 									cout << "asignacion valida" << endl;
+	// 									return true;
+	// 									m = m+2;
+	// 									break;
+	// 								} else {
+	// 									cout << "Error expresion no valida" << endl;
+	// 								} 
+	// 							} else {
+	// 								cout << "Error expresion no valida" << endl;
+	// 							} 
+	// 						}
+	// 					} else if((cierrePos - m) == 2 || ((cierrePos - m) % 2) == 0) {
+	// 						if (tokens[m][0] == "identificador") {
+	// 							if(tokens[m+1][0] == "decremento" || tokens[m+1][0] == "incremento") {
+	// 								return true;
+	// 								m = m+1;
+	// 							} else {
+	// 								cout << "Error expresion no valida" << endl;
+	// 							}
+	// 						} else if (tokens[m][0] == "suma" || tokens[m][0] == "multiplicacion" || tokens[m][0] == "division" || tokens[m][0] == "resta") {
+	// 							if (tokens[m+1][0] == "identificador" | tokens[m+1][0] == "digito"){
+	// 								cout << "asignacion valida" << endl;
+	// 								return true;
+	// 								m = m+1;
+	// 							}
+	// 						} else {
+	// 							cout << "Error expresion no valida" << endl;
+	// 							return false;
+	// 						}
+	// 					}
+	// 				}	
+	// 			}
+	// 		}
 			
-		} 
+	// 	} 
+
+	// }
+
+	int var_aum = 0;
+	int cierres = 0;
+
+	for( int i = 0; i < num_token; i++ ) {
+
+		if(tokens[var_aum][0] == "identificador"){
+			// cout << "Identificador encontrado" << endl;
+			var_aum++;
+			if(tokens[var_aum][0] == "asignacion") {
+				// cout << "Asignacion encontrado" << endl;
+				var_aum++;
+				if(tokens[var_aum][0] == "identificador" or tokens[var_aum][0] == "digito") {
+					// cout << "Numero encontrado" << endl;
+					var_aum++;
+					if(tokens[var_aum][0] == "cierre") {
+						cout << "Asignacion valida" << endl;
+						i = var_aum;
+					}
+				}
+			} 
+		}
 
 	}
+
+
 
 	return false;
 
@@ -604,7 +634,7 @@ bool si(string tokens[50][2], int num_token) {
 									} else if(num_par < 0) {
 										cout << "Existe un ) de más" << endl;
 									}
-									break;
+									return false;
 								}
 								if(tokens[j+var_aum][0] == "llave_abre") {
 									var_aum++;
@@ -685,7 +715,7 @@ bool si(string tokens[50][2], int num_token) {
 
 
 		} else if(tokens_verificar[inicio_asignacion][0] == "identificador") {
-			cout << tokens_verificar[inicio_asignacion][0] << endl;
+			// cout << tokens_verificar[inicio_asignacion][0] << endl;
 			int cierre_asignacion;
 			for(int m = 0; m < num_tokens_verificar; m++) {
 				if(tokens_verificar[m][0] == "cierre") {
