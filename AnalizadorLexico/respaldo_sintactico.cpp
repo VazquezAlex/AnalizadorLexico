@@ -16,8 +16,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include<fstream>
-
 using namespace std;
 
 // Declaració de funciones.
@@ -53,7 +51,7 @@ int main() {
 	ifstream myReadFile;
 	myReadFile.open("codigo.txt");
 	char output[100];
-
+	
 	if (myReadFile.is_open()) {
 		string s;
 		while (!myReadFile.eof()) {
@@ -65,7 +63,7 @@ int main() {
 	}
 
 	// Convertir la cadena para trabajarla en cada caracter.
-	// char *cadena = strdup(cadena.c_str());
+	char *cadenaconver = strdup(cadena.c_str());
 	
 	// Ciclo para analizar cada caracter de cadena.
 	for (int i = 0; i < cadena.length(); i++) {
@@ -74,9 +72,9 @@ int main() {
 			case 0:
 				
 				// Estado inicial.
-				if (cadena[i] == '+') {
+				if (cadenaconver[i] == '+') {
 					estado = 1;
-					if(cadena[i+1] == '+') {
+					if(cadenaconver[i+1] == '+') {
 						// Mandar a estado de aceptación de incremento (Estado 2).
 						estado = 2;
 					} else {
@@ -84,63 +82,61 @@ int main() {
 						estado = 3;
 						i--;
 					}
-				} else if(cadena[i] == '-') {
+				} else if(cadenaconver[i] == '-') {
 					estado = 4;
-					if(cadena[i+1] == '-') {
+					if(cadenaconver[i+1] == '-') {
 						estado = 5;
 					} else {
 						estado = 6;
 						i--;
 					}
-				} else if (cadena[i] == '*') {
+				} else if (cadenaconver[i] == '*') {
 					estado = 7;
 					i--;
-				} else if (cadena[i] == '/') {                  
+				} else if (cadenaconver[i] == '/') {                  
 					estado = 8;
 					i--;                
-				} else if (cadena[i] == '=') { 
+				} else if (cadenaconver[i] == '=') { 
 					estado = 9;
 					i--;  
-				} else if (cadena[i] == '<') {
+				} else if (cadenaconver[i] == '<') {
 					estado = 11;
 					i--;
-				} else if (cadena[i] == '>') {
+				} else if (cadenaconver[i] == '>') {
 					estado = 15;
 					i--;					
-				} else if (cadena[i] == ':') {
+				} else if (cadenaconver[i] == ':') {
 					estado = 18;
-				} else if (cadena[i] == ';') {
+				} else if (cadenaconver[i] == ';') {
 					estado = 20;
 					i--;
-				} else if (cadena[i] == '(') {
+				} else if (cadenaconver[i] == '(') {
 					estado = 21;
 					i--;
-				} else if (cadena[i] == ')') {
+				} else if (cadenaconver[i] == ')') {
 					estado = 22;
 					i--;
-				} else if (cadena[i] == '"') {
+				} else if (cadenaconver[i] == '"') {
 					estado = 23;
 					i--;
-				} else if(cadena[i] == '{') {
+				} else if(cadenaconver[i] == '{') {
 					// cout << "Token: Llave Abre" << endl;
 					tokens[num_token][0] = "llave_abre";
 					tokens[num_token][1] = "{";
 					num_token++;
-				}  else if(cadena[i] == '}') {
+				}  else if(cadenaconver[i] == '}') {
 					// cout << "Token: Llave Cierra" << endl;
 					tokens[num_token][0] = "llave_cierra";
 					tokens[num_token][1] = "}";
 					num_token++;
-				}  else if(isalpha(cadena[i])) {
+				}  else if(isalpha(cadenaconver[i])) {
 					estado = 24;
 					posicionPalabra = i;
 					i--;
-				} else if(isdigit(cadena[i])) {
+				} else if(isdigit(cadenaconver[i])) {
 					estado = 26;
 					posicionDigito = i;
 					i--;
-				} else if(cadena[i] == ' ' | cadena[i] == '\n' | cadena[i] == '	' ) {
-					//cout << "Se encontró espacio" << endl;
 				} else {
 					cout << "Error lexico" << endl;                    
 				}
@@ -168,7 +164,7 @@ int main() {
 				break;
 			case 4:
 				// Estado de recibió un '-' en estado 0.
-				if(cadena[i+1] == '-') {
+				if(cadenaconver[i+1] == '-') {
 					// cout << "Token: Decremento" << endl;
 					tokens[num_token][0] = "decremento";
 					tokens[num_token][1] = "--";
@@ -221,7 +217,7 @@ int main() {
 				
 			case 9:
 				// Si cuenta con un '='.
-				if(cadena[i+1] == '=') {
+				if(cadenaconver[i+1] == '=') {
 					estado = 10;
 				}
 				
@@ -238,9 +234,9 @@ int main() {
 				
 			case 11:
 				// Si tiene "=" o "<".
-				if(cadena[i+1] == '=') {
+				if(cadenaconver[i+1] == '=') {
 					estado = 13;
-				} else if(cadena[i+1] == '>') {
+				} else if(cadenaconver[i+1] == '>') {
 					estado = 12;
 				} else  {
 					estado = 14;
@@ -274,7 +270,7 @@ int main() {
 				break;
 				
 			case 15:
-				if (cadena[i+1] == '=') {
+				if (cadenaconver[i+1] == '=') {
 					estado = 17;
 					i--;
 				} else  {
@@ -301,7 +297,7 @@ int main() {
 				break;
 				
 			case 18:
-				if (cadena[i+1] == '=') {
+				if (cadenaconver[i+1] == '=') {
 					estado = 19;
 				}
 				
@@ -353,7 +349,7 @@ int main() {
 					num_token++;
 					palabra = ""; 
 					estado = 0;
-		   		} else if((isalpha(cadena[i+2]) or isdigit(cadena[i+2])) && (isalpha(cadena[i+1]) or isdigit(cadena[i+1]))) {
+		   		} else if((isalpha(cadenaconver[i+2]) or isdigit(cadenaconver[i+2])) && (isalpha(cadenaconver[i+1]) or isdigit(cadenaconver[i+1]))) {
 					estado = 24;
 				} else {
 					estado = 25;
@@ -365,8 +361,8 @@ int main() {
 				for (int j = posicionPalabra; j < i+1; j++) {
 					
 					
-					if(isalpha(cadena[j])) {
-						palabra = palabra + cadena[j];						
+					if(isalpha(cadenaconver[j])) {
+						palabra = palabra + cadenaconver[j];						
 					} else {
 						palabra = palabra;
 						i--;
@@ -391,8 +387,8 @@ int main() {
 						num_token++; 
 						palabra = "";
 						palabraNormal = false;
-						i++; // 7;
-						// cout << tokens[num_token][0] << endl;
+						i+= 7;
+						
 					} else if(palabra == "mientras") {
 						// cout << "Token: Palabra Reservada mientras" << endl;
 						
@@ -481,12 +477,12 @@ int main() {
 	
 			case 26:
 				
-				if(isdigit(cadena[i+1])) {
+				if(isdigit(cadenaconver[i+1])) {
 					estado = 26;
-					digito = digito + cadena[i];
+					digito = digito + cadenaconver[i];
 					//cout << "Estado 26" << endl;
-				} else if(isdigit(cadena[i])) {
-					digito = digito + cadena[i];
+				} else if(isdigit(cadenaconver[i])) {
+					digito = digito + cadenaconver[i];
 					estado = 27;
 					i--;
 					//cout << "Estado 26.1" << endl;
@@ -532,6 +528,65 @@ bool asignacion(int num_token, string tokens[50][2]) {
 		return false;
 	}
 
+	// for( int l=0; l < num_token; l++ ){
+	// 	if(tokens[l][0] == "identificador"){
+	// 		if(tokens[l+1][0] == "asignacion"){
+	// 			if(tokens[l+2][0] == "digito" || tokens[l+2][0] == "identificador"){
+	// 				int cierrePos;
+	// 				for(int j = l; j < num_token; j++){
+	// 					if(tokens[j][0] == "cierre"){
+	// 						cierrePos = j;
+	// 					}
+	// 				}
+
+	// 				for(int m = l+2; m < cierrePos; m++) {
+	// 					if((cierrePos - m) == 1) {
+	// 						if (tokens[m][0] == "identificador" || tokens[m][0] == "digito") {
+	// 							cout << "asignacion valida" << endl;
+	// 							return true;
+	// 							break;
+	// 						}
+	// 					} else if((cierrePos - m) >= 3) {
+	// 						if (tokens[m][0] == "identificador" || tokens[m][0] == "digito") {
+	// 							if(tokens[m+1][0] == "suma" || tokens[m+1][0] == "multiplicacion" || tokens[m+1][0] == "division" || tokens[m+1][0] == "resta") {
+	// 								if(tokens[m+2][0] == "identificador" || tokens[m+2][0] == "digito"){
+	// 									cout << "asignacion valida" << endl;
+	// 									return true;
+	// 									m = m+2;
+	// 									break;
+	// 								} else {
+	// 									cout << "Error expresion no valida" << endl;
+	// 								} 
+	// 							} else {
+	// 								cout << "Error expresion no valida" << endl;
+	// 							} 
+	// 						}
+	// 					} else if((cierrePos - m) == 2 || ((cierrePos - m) % 2) == 0) {
+	// 						if (tokens[m][0] == "identificador") {
+	// 							if(tokens[m+1][0] == "decremento" || tokens[m+1][0] == "incremento") {
+	// 								return true;
+	// 								m = m+1;
+	// 							} else {
+	// 								cout << "Error expresion no valida" << endl;
+	// 							}
+	// 						} else if (tokens[m][0] == "suma" || tokens[m][0] == "multiplicacion" || tokens[m][0] == "division" || tokens[m][0] == "resta") {
+	// 							if (tokens[m+1][0] == "identificador" | tokens[m+1][0] == "digito"){
+	// 								cout << "asignacion valida" << endl;
+	// 								return true;
+	// 								m = m+1;
+	// 							}
+	// 						} else {
+	// 							cout << "Error expresion no valida" << endl;
+	// 							return false;
+	// 						}
+	// 					}
+	// 				}	
+	// 			}
+	// 		}
+			
+	// 	} 
+
+	// }
 
 	int inicio_expresion;
 	int termino_expresion;
@@ -752,48 +807,10 @@ bool si(string tokens[50][2], int num_token) {
 		b++;
 	}
 
-	int aum = 1;
-	int cierre_llave, abre_llave;
-	int num_abre = 0, num_cierra = 0;
-
-	if(tokens[termino_expresion+aum][0] == "identificador"){
+	if(tokens[termino_expresion+1][0] == "identificador"){
 		int num = num_token - termino_expresion;
 		bool ver_asig = asignacion(num, tokens_verificar);
-	}  else if(tokens[termino_expresion+aum][0] == "cuandono") {
-		aum++;
-		if(tokens[termino_expresion+aum][0] == "llave_abre") {
-			num_abre++;
-			abre_llave = termino_expresion+aum;
-			while(tokens[termino_expresion+aum][0] != "llave_cierra") {
-				aum++;
-			}
-			
-			cierre_llave = termino_expresion + aum;
-			cout << "Cuando no, valido" << endl;
-			// cout << "la llave está en la posicion " << cierre_llave << "token: " << tokens[cierre_llave][0] << endl;
-
-			int c = 0;
-			num_tokens_verificar = 0;
-			for(int m = abre_llave+1; m < cierre_llave; m++) {
-				tokens_verificar[c][0] = tokens[m][0];
-				tokens_verificar[c][1] = tokens[m][1];
-				num_tokens_verificar += 1;
-				// cout << "Tokens a checar: " << tokens_verificar[c][0] << " " << tokens_verificar[c][1] << endl;
-				c++;
-			}
-
-			// cout << "primer token: " << tokens_verificar[0][0] << endl;
-
-			int size = cierre_llave - (abre_llave);
-
-			if(tokens_verificar[0][0] == "identificador") {
-				bool ver_asig = asignacion(num_tokens_verificar, tokens_verificar);
-			} 
-
-		} else {
-			cout << "Error 105: Se esperaba { despues de cuandono" << endl;
-		}
-	}
+	} 
 	// else if(tokens[termino_expresion+1][0] == "mientras") {
 
 	// }
