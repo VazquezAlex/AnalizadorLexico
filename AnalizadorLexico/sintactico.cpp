@@ -454,6 +454,14 @@ int main() {
 						palabra = "";
 						palabraNormal = false;
 						i+= 2;
+					} else if(palabra == "float") {
+						// cout << "Token: Palabra Reservada fin" << endl;
+						tokens[num_token][0] = "float";
+						tokens[num_token][1] = palabra;	
+						num_token++; 
+						palabra = "";
+						palabraNormal = false;
+						i+= 2;
 					}  else if(palabra == "(" | palabra == ")" | palabra == ":") {
 						palabraNormal = false;
 						palabra = "";
@@ -517,7 +525,7 @@ int main() {
 		bool ver_si = si(tokens, num_token);
 	} else if(tokens[0][0] == "mientras") {
 		bool ver_mientras = mientras(tokens, num_token);
-	} else if(tokens[0][0] == "identificador") {
+	} else if(tokens[0][0] == "string" || tokens[0][0] == "int" || tokens[0][0] == "float") {
 		bool ver_asignacion = asignacion(num_token, tokens);
 	} else {
 		cout << "Error 106: Expresion no valida" << endl;
@@ -545,7 +553,9 @@ bool asignacion(int num_token, string tokens[50][2]) {
 
 	for( int i = 0; i < num_token; i++ ) {
 
-		if(tokens[var_aum][0] == "identificador"){
+		if(tokens[var_aum][0] == "string" || tokens[var_aum][0] == "int" || tokens[var_aum][0] == "float") {
+			var_aum++;
+			if(tokens[var_aum][0] == "identificador"){
 			var_aum++;
 			if(tokens[var_aum][0] == "asignacion") {
 				var_aum++;
@@ -571,9 +581,10 @@ bool asignacion(int num_token, string tokens[50][2]) {
 					// Error cuando no haya un id o parametro despues del numero.
 				}
 			} else {
-			// Error cuando no haya una asignacion después de el id.
-		}
+				// Error cuando no haya una asignacion después de el id.
+			}
 		} 
+		}
 
 	}
 
@@ -723,7 +734,7 @@ bool si(string tokens[50][2], int num_token) {
 			bool si_valido = si(tokens_verificar, num_tokens_verificar);
 
 
-		} else if(tokens_verificar[inicio_asignacion][0] == "identificador") {
+		} else if(tokens_verificar[inicio_asignacion][0] == "string" || tokens_verificar[inicio_asignacion][0] == "int" || tokens_verificar[inicio_asignacion][0] == "float") {
 			// cout << tokens_verificar[inicio_asignacion][0] << endl;
 			int cierre_asignacion;
 			for(int m = 0; m < num_tokens_verificar; m++) {
@@ -756,7 +767,7 @@ bool si(string tokens[50][2], int num_token) {
 	int cierre_llave, abre_llave;
 	int num_abre = 0, num_cierra = 0;
 
-	if(tokens[termino_expresion+aum][0] == "identificador"){
+	if(tokens[termino_expresion+aum][0] == "string" || tokens[termino_expresion+aum][0] == "int" || tokens[termino_expresion+aum][0] == "float"  ){
 		int num = num_token - termino_expresion;
 		bool ver_asig = asignacion(num, tokens_verificar);
 	}  else if(tokens[termino_expresion+aum][0] == "cuandono") {
@@ -774,7 +785,7 @@ bool si(string tokens[50][2], int num_token) {
 
 			int c = 0;
 			num_tokens_verificar = 0;
-			for(int m = abre_llave+1; m < cierre_llave; m++) {
+			for(int m = abre_llave+1; m <= cierre_llave; m++) {
 				tokens_verificar[c][0] = tokens[m][0];
 				tokens_verificar[c][1] = tokens[m][1];
 				num_tokens_verificar += 1;
@@ -786,9 +797,13 @@ bool si(string tokens[50][2], int num_token) {
 
 			int size = cierre_llave - (abre_llave);
 
-			if(tokens_verificar[0][0] == "identificador") {
+			if(tokens_verificar[0][0] == "int" || tokens_verificar[0][0] == "string" || tokens_verificar[0][0] == "float") {
 				bool ver_asig = asignacion(num_tokens_verificar, tokens_verificar);
-			} 
+			} else if(tokens_verificar[0][0] == "mientras") {
+				bool ver_mientras = mientras(tokens_verificar, num_tokens_verificar);
+			} else if(tokens_verificar[0][0] == "si") {
+				bool ver_si = si(tokens_verificar, num_tokens_verificar);
+			}
 
 		} else {
 			cout << "Error 105: Se esperaba { despues de cuandono" << endl;

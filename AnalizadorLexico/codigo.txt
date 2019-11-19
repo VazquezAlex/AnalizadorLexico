@@ -1,5 +1,6 @@
-si(n==0) {
-	m:=9;
-} cuandono {
-	m:=1;
+si(c==1) {
+	int x:=1;
+	si(c==1) {
+		int c:=1;
+	}
 }
