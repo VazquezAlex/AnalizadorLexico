@@ -1,10 +1,2 @@
-int x := 1;
-x := 1;
-
-si(x == 1) {
-	x:= 1;
-}
-
-mientras(c==1) {
-	x := x+1;
-}
+string x := "hola";
+string a := "adios";

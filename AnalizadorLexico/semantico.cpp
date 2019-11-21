@@ -23,10 +23,12 @@ using namespace std;
 
 // Declaració de funciones.
 bool declaracion(int num_token, string tokens[50][2]);
-// string** crear_arreglo_declaracion(int inicial, int final, string tokens[50][2]);
 bool si(string tokens[50][2], int num_token);
 bool mientras(string tokens[50][2], int num_token);
 bool asignacion(string tokens[50][2], int num_token);
+
+string variables[100][2] = {};
+int num_variables = 0;
 
 int main() {
 	
@@ -44,7 +46,7 @@ int main() {
 
 	string tokens[50][2] = {}; // [condicion, ==] [identificador, hola]
 	string tokens_verificar[50][2] = {};
-	// string variables[100][2] = {};
+
 
 	int num_token = 0;
 	int num_tokens_verificar = 0;
@@ -345,7 +347,7 @@ int main() {
 			case 23:
 				// cout << "Token: Comilla" << endl;
 				tokens[num_token][0] = "comilla";
-				tokens[num_token][1] = "'";
+				tokens[num_token][1] = '"';
 				num_token++; 
 				estado = 0;
 				break;
@@ -533,13 +535,17 @@ int main() {
 	} else {
 		cout << "Error 106: Expresion no valida" << endl;
 	}
+
+	for(int i = 0; i < num_variables; i++) {
+		cout << variables[i][0] << " | "  << variables[i][1] << endl;
+	}
 		
 	return 1;
 }
 
 bool declaracion(int num_token, string tokens[50][2]) {
 
-	if(tokens[0][0] == "si" or tokens[0][0] == "mientras") {
+	if(tokens[0][0] == "si" or tokens[0][0] == "mientras" or tokens[0][0] == "identificador") {
 		return false;
 	}
 
@@ -551,15 +557,19 @@ bool declaracion(int num_token, string tokens[50][2]) {
 	int var_aum = 0;
 	int cierres = 0;
 
+	string tipo = "";
+	int dato = 0;
+
 	// cout << "Dentro de declaracion" << endl;
 	// for(int i = 0; i < num_token; i++) {
-	// 	cout << "Dentro de declaracion: " << tokens[i][0] << endl;
+	// 	cout << "Dentro de declaracion: " << tokens[i][1] << endl;
 	// }
 
 
 	for( int i = 0; i < num_token; i++ ) {
 
 		if(tokens[var_aum][0] == "tipo_dato") {
+			tipo = tokens[var_aum][1];
 			var_aum++;
 			if(tokens[var_aum][0] == "identificador"){
 				var_aum++;
@@ -572,7 +582,7 @@ bool declaracion(int num_token, string tokens[50][2]) {
 							cout << "declaracion valida" << endl;
 						} else {
 							while(
-								(tokens[var_aum][0] == "suma" or tokens[var_aum][0] == "resta" or tokens[var_aum][0] == "division" or tokens[var_aum][0] == "multiplicacion") && 
+								(tokens[var_aum][0] == "suma" or tokens[var_aum][0] == "resta" or tokens[var_aum][0] == "multiplicacion") && 
 								(tokens[var_aum+1][0] == "identificador" or tokens[var_aum+1][0] == "digito")) {
 								var_aum += 2;
 							}
@@ -583,6 +593,23 @@ bool declaracion(int num_token, string tokens[50][2]) {
 								cout << "Error 107: Se esperaba un ;" << endl;
 							}
 						}
+					} else if(tokens[var_aum][0] == "comilla" && tipo == "string") {
+						var_aum++;
+						if(tokens[var_aum][0] == "identificador" or tokens[var_aum][0] == "digito") {
+							dato = var_aum;
+							var_aum++;
+							if(tokens[var_aum][0] == "comilla") {
+								var_aum++;
+								if(tokens[var_aum][0] == "cierre") {
+									cout << "Se encontró una declaracion de string" << endl;
+									variables[num_variables][0] = "string";
+									variables[num_variables][1] = tokens[dato][1];
+									num_variables++;
+								}
+							}
+						}
+							
+
 					} else {
 						// Error cuando no haya un id o parametro despues del numero.
 						cout << "Error 100: Parámetro no valido en la posicion: " << var_aum  << ", se esperaba un id o un digito" << endl;
@@ -616,7 +643,10 @@ bool declaracion(int num_token, string tokens[50][2]) {
 		bool ver_mientras = mientras(tokens_verificar, num_tokens_verificar);
 	} else if(tokens[var_aum][0] == "identificador"){
 		bool ver_asignacion = asignacion(tokens_verificar, num_tokens_verificar);
-	}
+	} else if(tokens[var_aum][0] == "tipo_dato"){
+		cout << "Encontro otra declaracion" << endl;
+		bool ver_declaracion = declaracion(num_tokens_verificar, tokens_verificar);
+	} 
 
 	return false;
 
