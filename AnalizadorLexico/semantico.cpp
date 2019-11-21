@@ -26,6 +26,7 @@ bool declaracion(int num_token, string tokens[50][2]);
 // string** crear_arreglo_declaracion(int inicial, int final, string tokens[50][2]);
 bool si(string tokens[50][2], int num_token);
 bool mientras(string tokens[50][2], int num_token);
+bool asignacion(string tokens[50][2], int num_token);
 
 int main() {
 	
@@ -542,10 +543,10 @@ bool declaracion(int num_token, string tokens[50][2]) {
 		return false;
 	}
 
-	int inicio_expresion;
-	int termino_expresion;
-	string tokens_verificar[50][2];
-	int num_tokens_verificar;
+	int inicio_expresion = 0;
+	int termino_expresion = 0;
+	string tokens_verificar[50][2] = {};
+	int num_tokens_verificar = 0;
 
 	int var_aum = 0;
 	int cierres = 0;
@@ -613,9 +614,103 @@ bool declaracion(int num_token, string tokens[50][2]) {
 		bool ver_si = si(tokens_verificar, num_tokens_verificar);
 	} else if(tokens[var_aum][0] == "mientras"){
 		bool ver_mientras = mientras(tokens_verificar, num_tokens_verificar);
+	} else if(tokens[var_aum][0] == "identificador"){
+		bool ver_asignacion = asignacion(tokens_verificar, num_tokens_verificar);
 	}
 
 	return false;
+
+}
+
+// Funcion de asignacion. Ejemplo de sintaxis correcta: x := 1;
+bool asignacion(string tokens[50][2], int num_token) {
+
+	if(tokens[0][0] == "si" or tokens[0][0] == "mientras") {
+		return false;
+	}
+
+	int inicio_expresion;
+	int termino_expresion;
+	int num_tokens_verificar;
+
+	int var_aum = 0;
+	int cierres = 0;
+
+	// cout << "Dentro de asignacion" << endl;
+	// for(int i = 0; i < num_token; i++) {
+	// 	cout << "Dentro de asignacion: " << tokens[i][0] << endl;
+	// }
+
+
+	for( int i = 0; i < num_token; i++ ) {
+		if(tokens[var_aum][0] == "identificador"){
+			var_aum++;
+			if(tokens[var_aum][0] == "asignacion") {
+				var_aum++;
+				if(tokens[var_aum][0] == "identificador" or tokens[var_aum][0] == "digito") {
+					var_aum++;
+					if(tokens[var_aum][0] == "cierre") {
+						var_aum++;
+						cout << "asignacion valida" << endl;
+						i = num_token;
+					} else {
+						while(
+							(tokens[var_aum][0] == "suma" or tokens[var_aum][0] == "resta" or tokens[var_aum][0] == "division" or tokens[var_aum][0] == "multiplicacion") && 
+							(tokens[var_aum+1][0] == "identificador" or tokens[var_aum+1][0] == "digito")) {
+							var_aum += 2;
+						}
+						if(tokens[var_aum][0] == "cierre") {
+							var_aum++;
+							cout << "declaracion valida" << endl;
+							i = num_token;
+						} else {
+							cout << "Error 107: Se esperaba un ;" << endl;
+							return false;
+						}
+					}
+				} else {
+					// Error cuando no haya un id o parametro despues del numero.
+					cout << "Error 100: Parámetro no valido en la posicion: " << var_aum  << ", se esperaba un id o un digito" << endl;
+					return false;
+				}
+			} else {
+				// Error cuando no haya una asignacion después de el id.
+				cout << "Error 100: Parámetro no valido en la posicion: " << var_aum  << ", se esperaba una asignacion" << endl;
+				return false;
+			}
+		} else {
+			// Error falta identificador
+			cout << "Error 100: Parámetro no valido en la posicion: " << var_aum  << ", se esperaba un id" << endl;
+			return false;
+		}
+	}
+
+	num_tokens_verificar = 0;
+	// cout << "Primer token a verificar: " << tokens[var_aum][0] << endl;
+	// cout << "Cantidad de tokens: " << num_token  << endl;
+
+	// cout << "Segunda validacion" << endl;
+	int a = 0;
+	string tokens_verificar[50][2] = {};
+	for(int m = var_aum; m < num_token; m++) {
+		tokens_verificar[a][0] = tokens[m][0];
+		tokens_verificar[a][1] = tokens[m][1];
+		num_tokens_verificar += 1;
+		// cout << tokens_verificar[a][0] << " " << tokens_verificar[a][1] << endl;
+		a++;
+	}
+
+	// cout << "Posicion final: " << tokens[var_aum][0] << endl;
+
+	if(tokens[var_aum][0] == "si"){
+		bool ver_si = si(tokens_verificar, num_tokens_verificar);
+	} else if(tokens[var_aum][0] == "mientras"){
+		bool ver_mientras = mientras(tokens_verificar, num_tokens_verificar);
+	} else if(tokens[var_aum][0] == "identificador"){
+		bool ver_asig = asignacion(tokens_verificar, num_tokens_verificar);
+	}
+
+	return true;
 
 }
 
@@ -623,9 +718,9 @@ bool declaracion(int num_token, string tokens[50][2]) {
 // Función para identificar validaciones estilo if.
 bool si(string tokens[50][2], int num_token) {
 
-	int inicio_expresion;
-	int termino_expresion;
-	string tokens_verificar[50][2];
+	int inicio_expresion = 0;
+	int termino_expresion = 0;
+	string tokens_verificar[50][2] = {};
 	int num_tokens_verificar;
 
 	int num_llaves = 0;
@@ -727,9 +822,10 @@ bool si(string tokens[50][2], int num_token) {
 
 	// cout << "Numero de ifs recorridos: " << cant_ifs << endl;
 
+
 	int x = 0;
 	num_tokens_verificar = 0;
-	for(int m = inicio_expresion; m < termino_expresion; m++) {
+	for(int m = inicio_expresion; m < termino_expresion+1; m++) {
 		tokens_verificar[x][0] = tokens[m][0];
 		tokens_verificar[x][1] = tokens[m][1];
 		num_tokens_verificar += 1;
@@ -743,19 +839,25 @@ bool si(string tokens[50][2], int num_token) {
 	
 	for(int a = 0; a < num_tokens_verificar; a++) {
 		if(tokens_verificar[inicio_declaracion][0] == "si") {
-			
 			int cierre_declaracion;
 			bool si_valido = si(tokens_verificar, num_tokens_verificar);
 			break;
-
-
 		} else if(tokens_verificar[inicio_declaracion][0] == "tipo_dato") {
-			
 			int cierre_declaracion;
 			for(int m = 0; m < num_tokens_verificar; m++) {
 				if(tokens_verificar[m][0] == "cierre") {
 					cierre_declaracion = m;
 					bool declaracion_valida = declaracion(m+1, tokens_verificar);
+					a = num_tokens_verificar;
+					break;
+				}
+			}
+		} else if(tokens_verificar[inicio_declaracion][0] == "identificador") {
+			int cierre_declaracion;
+			for(int m = 0; m < num_tokens_verificar; m++) {
+				if(tokens_verificar[m][0] == "cierre") {
+					cierre_declaracion = m;
+					bool asignacion_valida = asignacion(tokens_verificar, num_tokens_verificar);
 					a = num_tokens_verificar;
 					break;
 				}
@@ -903,7 +1005,7 @@ bool mientras(string tokens[50][2], int num_token) {
 											if(num_llaves == 0) {
 												termino_expresion = k;
 												valido = true;
-												cout << "Mientras valido" << endl;
+												cout << "mientras valido" << endl;
 												// cout << "Cierre de la expresion: " << tokens[termino_expresion][1] << endl;
 												i = num_token;
 												break;
@@ -950,7 +1052,7 @@ bool mientras(string tokens[50][2], int num_token) {
 	}
 
 	int x = 0;
-	for(int m = inicio_expresion; m < termino_expresion+1; m++) {
+	for(int m = inicio_expresion; m < termino_expresion; m++) {
 		tokens_verificar[x][0] = tokens[m][0];
 		tokens_verificar[x][1] = tokens[m][1];
 		num_tokens_verificar += 1;
@@ -958,20 +1060,10 @@ bool mientras(string tokens[50][2], int num_token) {
 		x++;
 	}
 
-	// bool asig_valid = declaracion(num_tokens_verificar, tokens_verificar);
-
-	// if(declaracion(num_tokens_verificar, tokens_verificar)) {
-	// 	cout << "declaracion correcta" << endl;
-	// } else if(si(tokens_verificar, num_tokens_verificar))  {
-	// 		// cout << "Si valido" << endl;
-	// } else if(mientras(tokens_verificar, num_tokens_verificar)) {
-	// 	// cout << "Mientras Valido" << endl;
-	// }
-
 	int inicio_declaracion = 0;
 	string asig[50][2] = {};
 
-	for(int a = 0; a < num_tokens_verificar; a++) {
+	// for(int a = 0; a < num_tokens_verificar; a++) {
 		if(tokens_verificar[inicio_declaracion][0] == "si") {
 			
 			int cierre_declaracion;
@@ -984,19 +1076,27 @@ bool mientras(string tokens[50][2], int num_token) {
 			for(int m = 0; m < num_tokens_verificar; m++) {
 				if(tokens_verificar[m][0] == "cierre") {
 					cierre_declaracion = m;
-					a = m;
-					bool declaracion_valida = declaracion(m+1, tokens_verificar);
-					if(declaracion_valida) {
-						cout << "Asignación Válida" << endl;
-					}
+					// a = m;
+					bool declaracion_valida = declaracion(num_tokens_verificar, tokens_verificar);
+					break;
+				}
+			}
+		} else if(tokens_verificar[inicio_declaracion][0] == "identificador") {
+			// cout << tokens_verificar[inicio_declaracion][0] << endl;
+			int cierre_declaracion;
+			for(int m = 0; m < num_tokens_verificar; m++) {
+				if(tokens_verificar[m][0] == "cierre") {
+					cierre_declaracion = m;
+					// a = m;
+					bool asig_valida = asignacion(tokens_verificar, num_tokens_verificar);
 					break;
 				}
 			}
 		} else if(tokens_verificar[inicio_declaracion][0] == "mientras") {
-			bool mientras_valido = mientras(tokens_verificar, num_tokens_verificar);
+		bool mientras_valido = mientras(tokens_verificar, num_tokens_verificar);
 		}
 		inicio_declaracion++;
-	}
+	// }
 	
 	return valido;
 
