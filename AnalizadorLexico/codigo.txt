@@ -1,7 +1,10 @@
-int x:=1;
-float z:=1;
-si(x==100){
-	int y:= 2;
+si(c==1) {
+	int c := 1;
+	int y := 21;
 } cuandono {
-	int x:=10/1;
+	int o := 1;
+	int q := 1;
+}
+si(a==1) {
+	int x:= 1;
 }

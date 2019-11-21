@@ -43,7 +43,7 @@ int main() {
 
 	string tokens[50][2] = {}; // [condicion, ==] [identificador, hola]
 	string tokens_verificar[50][2] = {};
-	string variables[100][2] = {};
+	// string variables[100][2] = {};
 
 	int num_token = 0;
 	int num_tokens_verificar = 0;
@@ -550,6 +550,11 @@ bool asignacion(int num_token, string tokens[50][2]) {
 	int var_aum = 0;
 	int cierres = 0;
 
+	// cout << "Dentro de asignacion" << endl;
+	// for(int i = 0; i < num_token; i++) {
+	// 	cout << "Dentro de asignacion: " << tokens[i][0] << endl;
+	// }
+
 
 	for( int i = 0; i < num_token; i++ ) {
 
@@ -592,6 +597,8 @@ bool asignacion(int num_token, string tokens[50][2]) {
 		}
 
 	}
+
+	// num_tokens_verificar = 0;
 
 	int a = 0;
 	for(int m = var_aum; m < num_token; m++) {
@@ -671,11 +678,11 @@ bool si(string tokens[50][2], int num_token) {
 									inicio_expresion = j+var_aum;
 									for(int k = j+var_aum; k < num_token; k++) {
 										if(tokens[k][0] == "llave_cierra") {
+											var_aum++;
 											while(tokens[j+var_aum][0] == "llave_cierra") {
 												num_llaves--;
 												var_aum++;
 											}
-											// cout << "Cierre if: " << k << endl;
 											if(num_llaves == 0) {
 												termino_expresion = k;
 												valido = true;
@@ -720,36 +727,36 @@ bool si(string tokens[50][2], int num_token) {
 
 	// cout << "Numero de ifs recorridos: " << cant_ifs << endl;
 
-	int a = 0;
-	for(int m = inicio_expresion; m < termino_expresion+1; m++) {
-		tokens_verificar[a][0] = tokens[m][0];
-		tokens_verificar[a][1] = tokens[m][1];
+	int x = 0;
+	num_tokens_verificar = 0;
+	for(int m = inicio_expresion; m < termino_expresion; m++) {
+		tokens_verificar[x][0] = tokens[m][0];
+		tokens_verificar[x][1] = tokens[m][1];
 		num_tokens_verificar += 1;
-		// cout << tokens_verificar[a][0] << " " << tokens_verificar[a][1] << endl;
-		a++;
+		// cout << tokens_verificar[x][0] << " " << tokens_verificar[x][1] << endl;
+		x++;
 	}
 
-	int inicio_asignacion = 0;
-	string asig[50][2];
 
+	int inicio_asignacion = 0;
+	string asig[50][2] =  {};
+	
 	for(int a = 0; a < num_tokens_verificar; a++) {
 		if(tokens_verificar[inicio_asignacion][0] == "si") {
 			
 			int cierre_asignacion;
 			bool si_valido = si(tokens_verificar, num_tokens_verificar);
+			break;
 
 
 		} else if(tokens_verificar[inicio_asignacion][0] == "string" || tokens_verificar[inicio_asignacion][0] == "int" || tokens_verificar[inicio_asignacion][0] == "float") {
-			// cout << tokens_verificar[inicio_asignacion][0] << endl;
+			
 			int cierre_asignacion;
 			for(int m = 0; m < num_tokens_verificar; m++) {
 				if(tokens_verificar[m][0] == "cierre") {
 					cierre_asignacion = m;
-					a = m;
 					bool asignacion_valida = asignacion(m+1, tokens_verificar);
-					if(asignacion_valida) {
-						cout << "Asignación Válida" << endl;
-					}
+					a = num_tokens_verificar;
 					break;
 				}
 			}
@@ -759,12 +766,14 @@ bool si(string tokens[50][2], int num_token) {
 		inicio_asignacion++;
 	}
 
+	string tokens_ver_2[50][2] = {};
+
 	int b = 0;
-	for(int m = termino_expresion+1; m < num_token; m++) {
-		tokens_verificar[b][0] = tokens[m][0];
-		tokens_verificar[b][1] = tokens[m][1];
+	for(int m = termino_expresion + 1; m <= num_token; m++) {
+		tokens_ver_2[b][0] = tokens[m][0];
+		tokens_ver_2[b][1] = tokens[m][1];
 		num_tokens_verificar += 1;
-		// cout << tokens_verificar[b][0] << " " << tokens_verificar[b][1] << endl;
+		// cout << tokens_ver_2[b][0] << " " << tokens_ver_2[b][1] << endl;
 		b++;
 	}
 
@@ -772,9 +781,11 @@ bool si(string tokens[50][2], int num_token) {
 	int cierre_llave, abre_llave;
 	int num_abre = 0, num_cierra = 0;
 
+
+
 	if(tokens[termino_expresion+aum][0] == "string" || tokens[termino_expresion+aum][0] == "int" || tokens[termino_expresion+aum][0] == "float"  ){
 		int num = num_token - termino_expresion;
-		bool ver_asig = asignacion(num, tokens_verificar);
+		bool ver_asig = asignacion(num, tokens_ver_2);
 	}  else if(tokens[termino_expresion+aum][0] == "cuandono") {
 		aum++;
 		if(tokens[termino_expresion+aum][0] == "llave_abre") {
@@ -786,7 +797,7 @@ bool si(string tokens[50][2], int num_token) {
 			
 			cierre_llave = termino_expresion + aum;
 			cout << "Cuando no, valido" << endl;
-			// cout << "la llave está en la posicion " << cierre_llave << "token: " << tokens[cierre_llave][0] << endl;
+			// cout << "la llave está en la posicion " << cierre_llave << "token: " << tokens[cierre_llave+1][0] << endl;
 
 			int c = 0;
 			num_tokens_verificar = 0;
@@ -794,11 +805,8 @@ bool si(string tokens[50][2], int num_token) {
 				tokens_verificar[c][0] = tokens[m][0];
 				tokens_verificar[c][1] = tokens[m][1];
 				num_tokens_verificar += 1;
-				// cout << "Tokens a checar: " << tokens_verificar[c][0] << " " << tokens_verificar[c][1] << endl;
 				c++;
 			}
-
-			// cout << "primer token: " << tokens_verificar[0][0] << endl;
 
 			int size = cierre_llave - (abre_llave);
 
@@ -810,13 +818,30 @@ bool si(string tokens[50][2], int num_token) {
 				bool ver_si = si(tokens_verificar, num_tokens_verificar);
 			}
 
-		} else {
-			cout << "Error 105: Se esperaba { despues de cuandono" << endl;
-		}
-	}
-	// else if(tokens[termino_expresion+1][0] == "mientras") {
+			string tokens_ver_despues[50][2] = {};
 
-	// }
+			int pos = 0;
+			for(int i = cierre_llave+1; i <= num_token; i++) {
+				tokens_ver_despues[pos][0] = tokens[i][0];
+				tokens_ver_despues[pos][1] = tokens[i][1];
+				pos++;
+			}
+			int tam = num_token - cierre_llave;
+
+			if(tokens[cierre_llave+1][0] == "mientras"){
+				bool ver_mientras = mientras(tokens_ver_despues, tam);
+			} else if(tokens[cierre_llave+1][0] == "si"){
+				bool ver_si = si(tokens_ver_despues, tam);
+			}
+
+		} else {
+			cout << "Error Sintactico 105: Se esperaba { despues de cuandono" << endl;
+		}
+	} else if(tokens[termino_expresion+1][0] == "mientras"){
+		int num = num_token - termino_expresion;
+		bool ver_mientras = mientras(tokens_ver_2, num);
+	}
+
 
 	return valido;
 
