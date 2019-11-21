@@ -444,7 +444,7 @@ int main() {
 						i+= 2;
 					} else if(palabra == "int") {
 						// cout << "Token: Palabra Reservada fin" << endl;
-						tokens[num_token][0] = "int";
+						tokens[num_token][0] = "tipo_dato";
 						tokens[num_token][1] = palabra;	
 						num_token++; 
 						palabra = "";
@@ -452,7 +452,7 @@ int main() {
 						i+= 2;
 					} else if(palabra == "string") {
 						// cout << "Token: Palabra Reservada fin" << endl;
-						tokens[num_token][0] = "string";
+						tokens[num_token][0] = "tipo_dato";
 						tokens[num_token][1] = palabra;	
 						num_token++; 
 						palabra = "";
@@ -460,7 +460,7 @@ int main() {
 						i+= 2;
 					} else if(palabra == "float") {
 						// cout << "Token: Palabra Reservada fin" << endl;
-						tokens[num_token][0] = "float";
+						tokens[num_token][0] = "tipo_dato";
 						tokens[num_token][1] = palabra;	
 						num_token++; 
 						palabra = "";
@@ -527,7 +527,7 @@ int main() {
 		bool ver_si = si(tokens, num_token);
 	} else if(tokens[0][0] == "mientras") {
 		bool ver_mientras = mientras(tokens, num_token);
-	} else if(tokens[0][0] == "string" || tokens[0][0] == "int" || tokens[0][0] == "float") {
+	} else if(tokens[0][0] == "tipo_dato") {
 		bool ver_asignacion = asignacion(num_token, tokens);
 	} else {
 		cout << "Error 106: Expresion no valida" << endl;
@@ -558,7 +558,7 @@ bool asignacion(int num_token, string tokens[50][2]) {
 
 	for( int i = 0; i < num_token; i++ ) {
 
-		if(tokens[var_aum][0] == "string" || tokens[var_aum][0] == "int" || tokens[var_aum][0] == "float") {
+		if(tokens[var_aum][0] == "tipo_dato") {
 			var_aum++;
 			if(tokens[var_aum][0] == "identificador"){
 				var_aum++;
@@ -749,7 +749,7 @@ bool si(string tokens[50][2], int num_token) {
 			break;
 
 
-		} else if(tokens_verificar[inicio_asignacion][0] == "string" || tokens_verificar[inicio_asignacion][0] == "int" || tokens_verificar[inicio_asignacion][0] == "float") {
+		} else if(tokens_verificar[inicio_asignacion][0] == "tipo_dato") {
 			
 			int cierre_asignacion;
 			for(int m = 0; m < num_tokens_verificar; m++) {
@@ -783,7 +783,7 @@ bool si(string tokens[50][2], int num_token) {
 
 
 
-	if(tokens[termino_expresion+aum][0] == "string" || tokens[termino_expresion+aum][0] == "int" || tokens[termino_expresion+aum][0] == "float"  ){
+	if(tokens[termino_expresion+aum][0] == "tipo_dato"  ){
 		int num = num_token - termino_expresion;
 		bool ver_asig = asignacion(num, tokens_ver_2);
 	}  else if(tokens[termino_expresion+aum][0] == "cuandono") {
@@ -810,7 +810,7 @@ bool si(string tokens[50][2], int num_token) {
 
 			int size = cierre_llave - (abre_llave);
 
-			if(tokens_verificar[0][0] == "int" || tokens_verificar[0][0] == "string" || tokens_verificar[0][0] == "float") {
+			if(tokens_verificar[0][0] == "tipo_dato") {
 				bool ver_asig = asignacion(num_tokens_verificar, tokens_verificar);
 			} else if(tokens_verificar[0][0] == "mientras") {
 				bool ver_mientras = mientras(tokens_verificar, num_tokens_verificar);
@@ -949,13 +949,13 @@ bool mientras(string tokens[50][2], int num_token) {
 		}
 	}
 
-	int a = 0;
+	int x = 0;
 	for(int m = inicio_expresion; m < termino_expresion+1; m++) {
-		tokens_verificar[a][0] = tokens[m][0];
-		tokens_verificar[a][1] = tokens[m][1];
+		tokens_verificar[x][0] = tokens[m][0];
+		tokens_verificar[x][1] = tokens[m][1];
 		num_tokens_verificar += 1;
-		// cout << tokens_verificar[a][0] << " " << tokens_verificar[a][1] << endl;
-		a++;
+		// cout << tokens_verificar[x][0] << " " << tokens_verificar[x][1] << endl;
+		x++;
 	}
 
 	// bool asig_valid = asignacion(num_tokens_verificar, tokens_verificar);
@@ -969,7 +969,7 @@ bool mientras(string tokens[50][2], int num_token) {
 	// }
 
 	int inicio_asignacion = 0;
-	string asig[50][2];
+	string asig[50][2] = {};
 
 	for(int a = 0; a < num_tokens_verificar; a++) {
 		if(tokens_verificar[inicio_asignacion][0] == "si") {
@@ -978,7 +978,7 @@ bool mientras(string tokens[50][2], int num_token) {
 			bool si_valido = si(tokens_verificar, num_tokens_verificar);
 
 
-		} else if(tokens_verificar[inicio_asignacion][0] == "identificador") {
+		} else if(tokens_verificar[inicio_asignacion][0] == "tipo_dato") {
 			// cout << tokens_verificar[inicio_asignacion][0] << endl;
 			int cierre_asignacion;
 			for(int m = 0; m < num_tokens_verificar; m++) {
