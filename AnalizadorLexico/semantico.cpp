@@ -661,7 +661,7 @@ bool asignacion(string tokens[50][2], int num_token) {
 						}
 						if(tokens[var_aum][0] == "cierre") {
 							var_aum++;
-							cout << "declaracion valida" << endl;
+							cout << "asignacion valida" << endl;
 							i = num_token;
 						} else {
 							cout << "Error 107: Se esperaba un ;" << endl;
