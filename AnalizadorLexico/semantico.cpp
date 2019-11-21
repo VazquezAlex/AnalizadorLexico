@@ -22,8 +22,8 @@
 using namespace std;
 
 // Declaració de funciones.
-bool asignacion(int num_token, string tokens[50][2]);
-// string** crear_arreglo_asignacion(int inicial, int final, string tokens[50][2]);
+bool declaracion(int num_token, string tokens[50][2]);
+// string** crear_arreglo_declaracion(int inicial, int final, string tokens[50][2]);
 bool si(string tokens[50][2], int num_token);
 bool mientras(string tokens[50][2], int num_token);
 
@@ -528,7 +528,7 @@ int main() {
 	} else if(tokens[0][0] == "mientras") {
 		bool ver_mientras = mientras(tokens, num_token);
 	} else if(tokens[0][0] == "tipo_dato") {
-		bool ver_asignacion = asignacion(num_token, tokens);
+		bool ver_declaracion = declaracion(num_token, tokens);
 	} else {
 		cout << "Error 106: Expresion no valida" << endl;
 	}
@@ -536,7 +536,7 @@ int main() {
 	return 1;
 }
 
-bool asignacion(int num_token, string tokens[50][2]) {
+bool declaracion(int num_token, string tokens[50][2]) {
 
 	if(tokens[0][0] == "si" or tokens[0][0] == "mientras") {
 		return false;
@@ -550,9 +550,9 @@ bool asignacion(int num_token, string tokens[50][2]) {
 	int var_aum = 0;
 	int cierres = 0;
 
-	// cout << "Dentro de asignacion" << endl;
+	// cout << "Dentro de declaracion" << endl;
 	// for(int i = 0; i < num_token; i++) {
-	// 	cout << "Dentro de asignacion: " << tokens[i][0] << endl;
+	// 	cout << "Dentro de declaracion: " << tokens[i][0] << endl;
 	// }
 
 
@@ -568,7 +568,7 @@ bool asignacion(int num_token, string tokens[50][2]) {
 						var_aum++;
 						if(tokens[var_aum][0] == "cierre") {
 							var_aum++;
-							cout << "Asignacion valida" << endl;
+							cout << "declaracion valida" << endl;
 						} else {
 							while(
 								(tokens[var_aum][0] == "suma" or tokens[var_aum][0] == "resta" or tokens[var_aum][0] == "division" or tokens[var_aum][0] == "multiplicacion") && 
@@ -577,7 +577,7 @@ bool asignacion(int num_token, string tokens[50][2]) {
 							}
 							if(tokens[var_aum][0] == "cierre") {
 								var_aum++;
-								cout << "Asignacion valida" << endl;
+								cout << "declaracion valida" << endl;
 							} else {
 								cout << "Error 107: Se esperaba un ;" << endl;
 							}
@@ -738,32 +738,32 @@ bool si(string tokens[50][2], int num_token) {
 	}
 
 
-	int inicio_asignacion = 0;
+	int inicio_declaracion = 0;
 	string asig[50][2] =  {};
 	
 	for(int a = 0; a < num_tokens_verificar; a++) {
-		if(tokens_verificar[inicio_asignacion][0] == "si") {
+		if(tokens_verificar[inicio_declaracion][0] == "si") {
 			
-			int cierre_asignacion;
+			int cierre_declaracion;
 			bool si_valido = si(tokens_verificar, num_tokens_verificar);
 			break;
 
 
-		} else if(tokens_verificar[inicio_asignacion][0] == "tipo_dato") {
+		} else if(tokens_verificar[inicio_declaracion][0] == "tipo_dato") {
 			
-			int cierre_asignacion;
+			int cierre_declaracion;
 			for(int m = 0; m < num_tokens_verificar; m++) {
 				if(tokens_verificar[m][0] == "cierre") {
-					cierre_asignacion = m;
-					bool asignacion_valida = asignacion(m+1, tokens_verificar);
+					cierre_declaracion = m;
+					bool declaracion_valida = declaracion(m+1, tokens_verificar);
 					a = num_tokens_verificar;
 					break;
 				}
 			}
-		} else if(tokens_verificar[inicio_asignacion][0] == "mientras") {
+		} else if(tokens_verificar[inicio_declaracion][0] == "mientras") {
 			bool mientras_valido = mientras(tokens_verificar, num_tokens_verificar);
 		}
-		inicio_asignacion++;
+		inicio_declaracion++;
 	}
 
 	string tokens_ver_2[50][2] = {};
@@ -785,7 +785,7 @@ bool si(string tokens[50][2], int num_token) {
 
 	if(tokens[termino_expresion+aum][0] == "tipo_dato"  ){
 		int num = num_token - termino_expresion;
-		bool ver_asig = asignacion(num, tokens_ver_2);
+		bool ver_asig = declaracion(num, tokens_ver_2);
 	}  else if(tokens[termino_expresion+aum][0] == "cuandono") {
 		aum++;
 		if(tokens[termino_expresion+aum][0] == "llave_abre") {
@@ -811,7 +811,7 @@ bool si(string tokens[50][2], int num_token) {
 			int size = cierre_llave - (abre_llave);
 
 			if(tokens_verificar[0][0] == "tipo_dato") {
-				bool ver_asig = asignacion(num_tokens_verificar, tokens_verificar);
+				bool ver_asig = declaracion(num_tokens_verificar, tokens_verificar);
 			} else if(tokens_verificar[0][0] == "mientras") {
 				bool ver_mientras = mientras(tokens_verificar, num_tokens_verificar);
 			} else if(tokens_verificar[0][0] == "si") {
@@ -958,44 +958,44 @@ bool mientras(string tokens[50][2], int num_token) {
 		x++;
 	}
 
-	// bool asig_valid = asignacion(num_tokens_verificar, tokens_verificar);
+	// bool asig_valid = declaracion(num_tokens_verificar, tokens_verificar);
 
-	// if(asignacion(num_tokens_verificar, tokens_verificar)) {
-	// 	cout << "Asignacion correcta" << endl;
+	// if(declaracion(num_tokens_verificar, tokens_verificar)) {
+	// 	cout << "declaracion correcta" << endl;
 	// } else if(si(tokens_verificar, num_tokens_verificar))  {
 	// 		// cout << "Si valido" << endl;
 	// } else if(mientras(tokens_verificar, num_tokens_verificar)) {
 	// 	// cout << "Mientras Valido" << endl;
 	// }
 
-	int inicio_asignacion = 0;
+	int inicio_declaracion = 0;
 	string asig[50][2] = {};
 
 	for(int a = 0; a < num_tokens_verificar; a++) {
-		if(tokens_verificar[inicio_asignacion][0] == "si") {
+		if(tokens_verificar[inicio_declaracion][0] == "si") {
 			
-			int cierre_asignacion;
+			int cierre_declaracion;
 			bool si_valido = si(tokens_verificar, num_tokens_verificar);
 
 
-		} else if(tokens_verificar[inicio_asignacion][0] == "tipo_dato") {
-			// cout << tokens_verificar[inicio_asignacion][0] << endl;
-			int cierre_asignacion;
+		} else if(tokens_verificar[inicio_declaracion][0] == "tipo_dato") {
+			// cout << tokens_verificar[inicio_declaracion][0] << endl;
+			int cierre_declaracion;
 			for(int m = 0; m < num_tokens_verificar; m++) {
 				if(tokens_verificar[m][0] == "cierre") {
-					cierre_asignacion = m;
+					cierre_declaracion = m;
 					a = m;
-					bool asignacion_valida = asignacion(m+1, tokens_verificar);
-					if(asignacion_valida) {
+					bool declaracion_valida = declaracion(m+1, tokens_verificar);
+					if(declaracion_valida) {
 						cout << "Asignación Válida" << endl;
 					}
 					break;
 				}
 			}
-		} else if(tokens_verificar[inicio_asignacion][0] == "mientras") {
+		} else if(tokens_verificar[inicio_declaracion][0] == "mientras") {
 			bool mientras_valido = mientras(tokens_verificar, num_tokens_verificar);
 		}
-		inicio_asignacion++;
+		inicio_declaracion++;
 	}
 	
 	return valido;
