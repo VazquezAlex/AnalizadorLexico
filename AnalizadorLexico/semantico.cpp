@@ -1032,7 +1032,7 @@ bool si(string tokens[50][2], int num_token) {
 		tokens_verificar[x][0] = tokens[m][0];
 		tokens_verificar[x][1] = tokens[m][1];
 		num_tokens_verificar += 1;
-		cout << tokens_verificar[x][0] << " " << tokens_verificar[x][1] << endl;
+		// cout << tokens_verificar[x][0] << " " << tokens_verificar[x][1] << endl;
 		x++;
 	}
 
@@ -1176,7 +1176,12 @@ bool mientras(string tokens[50][2], int num_token) {
 					var_aum++;
 				}
 				if(tokens[i+var_aum][0] == "identificador") {
-					var_aum++;
+					bool id_existe = buscar_identificador(tokens[i+var_aum][0]);
+					if(!id_existe) {
+						cout << "Error semantico: La variable " << tokens[i+var_aum][1] << " no existe, en la linea " << endl;
+					} else {
+						var_aum++;
+					}
 					if(tokens[i+var_aum][0] == "condicion") {
 						var_aum++;
 						if(tokens[i+var_aum][0] == "identificador" || tokens[i+var_aum][0] == "digito") {
