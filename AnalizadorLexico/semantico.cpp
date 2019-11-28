@@ -34,6 +34,8 @@ int variable_index(string id);
 string variables[100][2] = {};
 int num_variables = 0;
 
+int num_linea = 0;
+
 int main() {
 	
 	// Variables básicas.
@@ -150,8 +152,10 @@ int main() {
 					estado = 26;
 					posicionDigito = i;
 					i--;
-				} else if(cadena[i] == ' ' | cadena[i] == '\n' | cadena[i] == '	' ) {
+				} else if(cadena[i] == ' ' | cadena[i] == '	' ) {
 					//cout << "Se encontró espacio" << endl;
+				} else if(cadena[i] == '\n'){
+					num_linea++;
 				} else {
 					cout << "Error lexico" << endl;                    
 				}
@@ -593,7 +597,7 @@ bool declaracion(int num_token, string tokens[50][2]) {
 								num_variables++;
 								cout << "Variable registrada" << endl;
 							} else {
-								cout << "Error Semantico 108. Nombre de variable ya existente" << endl;
+								cout << "Error Semantico 108. Nombre de variable ya existente, en " << endl;
 							}
 						} else {
 							while(
@@ -641,7 +645,7 @@ bool declaracion(int num_token, string tokens[50][2]) {
 										num_variables++;
 										cout << "Variable registrada" << endl;
 									} else {
-										cout << "Error Semantico 108. Nombre de variable ya existente" << endl;
+										cout << "Error Semantico 108. Nombre de variable ya existente, en " << endl;
 									}
 								}
 							}
@@ -1163,6 +1167,11 @@ bool mientras(string tokens[50][2], int num_token) {
 	string tokens_verificar[50][2];
 	int num_tokens_verificar = 0;
 
+	int posicion_variable = 0;
+
+	string tipo1 = "";
+	string tipo2 = "";
+
 	int var_aum = 0;
 	int num_par = 0;
 
@@ -1176,14 +1185,20 @@ bool mientras(string tokens[50][2], int num_token) {
 					var_aum++;
 				}
 				if(tokens[i+var_aum][0] == "identificador") {
-					bool id_existe = buscar_identificador(tokens[i+var_aum][0]);
-					if(!id_existe) {
-						cout << "Error semantico: La variable " << tokens[i+var_aum][1] << " no existe, en la linea " << endl;
+					bool id = existe_identificador(tokens[i+var_aum][1]);
+					// cout << "Variable a buscar: " << tokens[i+var_aum][1] << endl;
+					if(!id) {
+						cout << "Error semantico: Variable " << tokens[i+var_aum][1] << " no existe" << endl;
+						return false;
 					} else {
+						posicion_variable = variable_index(tokens[i+var_aum][1]);
+						tipo1 = variables[posicion_variable][0];
 						var_aum++;
 					}
+					
 					if(tokens[i+var_aum][0] == "condicion") {
 						var_aum++;
+						// cout << "Token despues de la condicion: " << tokens[i+var_aum][1] << endl;
 						if(tokens[i+var_aum][0] == "identificador" || tokens[i+var_aum][0] == "digito") {
 							var_aum++;
 							if(tokens[i+var_aum][0] == "parentesis_cierra") {
@@ -1235,7 +1250,69 @@ bool mientras(string tokens[50][2], int num_token) {
 									<< " y se recibio " << tokens[i+var_aum][1] << endl;
 								return false;
 							}
-						}  else {
+						} else if(tokens[i+var_aum][1] == "comilla") {
+
+							cout << "Comienza un string" << endl;
+							while(tokens[i+var_aum][1] != "comilla") {
+								var_aum++;
+							}
+
+							cout << "TOKEN: " << tokens[i+var_aum][0] << endl;
+							if(tokens[i+var_aum][0] == "comilla" and tipo1 == "string") {
+								cout << "Una condicion de string encontrada" << endl;
+								var_aum++;
+								if(tokens[i+var_aum][0] == "parentesis_cierra") {
+									var_aum++;
+									while(tokens[i+var_aum][0] == "parentesis_cierra") {
+										num_par--;
+										var_aum++;
+									}
+									if(num_par != 0) {
+										cout << "Error 104: Cantidad de parentesis incorrecta. " << endl;
+										if(num_par > 0) {
+											cout << "Existe un ( de más" << endl;
+										} else if(num_par < 0) {
+											cout << "Existe un ) de más" << endl;
+										}
+										return false;
+									}
+									if(tokens[i+var_aum][0] == "llave_abre") {
+										var_aum++;
+										num_llaves++;
+										inicio_expresion = i+var_aum;
+										// cout << "Inicio dce la expresion: " << tokens[inicio_expresion][1] << endl;
+										for(int k = i+var_aum; k < num_token; k++) {
+											if(tokens[k][0] == "llave_cierra") {
+												num_llaves--;
+												// cout << "Cierre if: " << k << endl;
+												if(num_llaves == 0) {
+													termino_expresion = k;
+													valido = true;
+													cout << "mientras valido" << endl;
+													// cout << "Cierre de la expresion: " << tokens[termino_expresion][1] << endl;
+													i = num_token;
+													break;
+												} else {
+													cout << "Error 103: Numero de llaves incorrecto. " ;
+													if(num_llaves > 0) {
+														cout << "Existe un numero mayor de {, en la posicion " << i+var_aum << endl;
+													} else if(num_llaves < 0) {
+														cout << "Existe un numero mayor de }, en la posicion " << i+var_aum << endl;
+													}
+													return false;
+												}
+											}
+										}
+									}
+
+								} else {
+									// Error cuando no hay parentesis que cierra.
+									cout << "Error 105: Uso de parentesis incorrecto, se esperaba ')' en " << i+var_aum 
+										<< " y se recibio " << tokens[i+var_aum][1] << endl;
+									return false;
+								}
+							}
+						} else {
 							cout << "Error 100: Parametro no válido en la posicion " 
 							 << i+var_aum << " se espera una variable y se obtuvo " << tokens[i+var_aum][1] << endl;
 							return false;
