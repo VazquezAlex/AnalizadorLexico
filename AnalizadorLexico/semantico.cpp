@@ -27,6 +27,10 @@ bool si(string tokens[50][2], int num_token);
 bool mientras(string tokens[50][2], int num_token);
 bool asignacion(string tokens[50][2], int num_token);
 
+// Manejo de variables.
+bool existe_identificador(string id);
+int variable_index(string id);
+
 string variables[100][2] = {};
 int num_variables = 0;
 
@@ -536,6 +540,7 @@ int main() {
 		cout << "Error 106: Expresion no valida" << endl;
 	}
 
+	cout << "\n\nVariables registradas; " << endl;
 	for(int i = 0; i < num_variables; i++) {
 		cout << variables[i][0] << " | "  << variables[i][1] << endl;
 	}
@@ -572,6 +577,7 @@ bool declaracion(int num_token, string tokens[50][2]) {
 			tipo = tokens[var_aum][1];
 			var_aum++;
 			if(tokens[var_aum][0] == "identificador"){
+				dato = var_aum;
 				var_aum++;
 				if(tokens[var_aum][0] == "asignacion") {
 					var_aum++;
@@ -579,16 +585,41 @@ bool declaracion(int num_token, string tokens[50][2]) {
 						var_aum++;
 						if(tokens[var_aum][0] == "cierre") {
 							var_aum++;
-							cout << "declaracion valida" << endl;
+							// cout << "declaracion valida" << endl;
+							bool id_existe = existe_identificador(tokens[dato][1]);
+							if(!id_existe) {
+								variables[num_variables][0] = "int";
+								variables[num_variables][1] = tokens[dato][1];
+								num_variables++;
+								cout << "Variable registrada" << endl;
+							} else {
+								cout << "Error Semantico 108. Nombre de variable ya existente" << endl;
+							}
 						} else {
 							while(
 								(tokens[var_aum][0] == "suma" or tokens[var_aum][0] == "resta" or tokens[var_aum][0] == "multiplicacion") && 
 								(tokens[var_aum+1][0] == "identificador" or tokens[var_aum+1][0] == "digito")) {
 								var_aum += 2;
 							}
+							if(tokens[var_aum][0] == "division") {
+								var_aum++;
+								if(tokens[var_aum][0] == "digito" && tipo == "float") {
+									var_aum++;
+									// cout << "Se encontró una declaracion de float" << endl;
+									bool id_existe = existe_identificador(tokens[dato][1]);
+									if(!id_existe) {
+										variables[num_variables][0] = "float";
+										variables[num_variables][1] = tokens[dato][1];
+										num_variables++;
+										cout << "Variable registrada" << endl;
+									} else {
+										cout << "Error Semantico 108. Nombre de variable ya existente" << endl;
+									}
+								}
+							}
 							if(tokens[var_aum][0] == "cierre") {
 								var_aum++;
-								cout << "declaracion valida" << endl;
+								// cout << "declaracion valida" << endl;
 							} else {
 								cout << "Error 107: Se esperaba un ;" << endl;
 							}
@@ -596,15 +627,22 @@ bool declaracion(int num_token, string tokens[50][2]) {
 					} else if(tokens[var_aum][0] == "comilla" && tipo == "string") {
 						var_aum++;
 						if(tokens[var_aum][0] == "identificador" or tokens[var_aum][0] == "digito") {
-							dato = var_aum;
+							// dato = var_aum;
 							var_aum++;
 							if(tokens[var_aum][0] == "comilla") {
 								var_aum++;
 								if(tokens[var_aum][0] == "cierre") {
-									cout << "Se encontró una declaracion de string" << endl;
-									variables[num_variables][0] = "string";
-									variables[num_variables][1] = tokens[dato][1];
-									num_variables++;
+									var_aum++;
+									// cout << "Se encontró una declaracion de string" << endl;
+									bool id_existe = existe_identificador(tokens[dato][1]);
+									if(!id_existe) {
+										variables[num_variables][0] = "string";
+										variables[num_variables][1] = tokens[dato][1];
+										num_variables++;
+										cout << "Variable registrada" << endl;
+									} else {
+										cout << "Error Semantico 108. Nombre de variable ya existente" << endl;
+									}
 								}
 							}
 						}
@@ -644,7 +682,7 @@ bool declaracion(int num_token, string tokens[50][2]) {
 	} else if(tokens[var_aum][0] == "identificador"){
 		bool ver_asignacion = asignacion(tokens_verificar, num_tokens_verificar);
 	} else if(tokens[var_aum][0] == "tipo_dato"){
-		cout << "Encontro otra declaracion" << endl;
+		// cout << "Encontro otra declaracion" << endl;
 		bool ver_declaracion = declaracion(num_tokens_verificar, tokens_verificar);
 	} 
 
@@ -666,6 +704,10 @@ bool asignacion(string tokens[50][2], int num_token) {
 	int var_aum = 0;
 	int cierres = 0;
 
+	int posicion_variable = 0;
+
+	string dato = "";
+
 	// cout << "Dentro de asignacion" << endl;
 	// for(int i = 0; i < num_token; i++) {
 	// 	cout << "Dentro de asignacion: " << tokens[i][0] << endl;
@@ -674,27 +716,53 @@ bool asignacion(string tokens[50][2], int num_token) {
 
 	for( int i = 0; i < num_token; i++ ) {
 		if(tokens[var_aum][0] == "identificador"){
-			var_aum++;
+			if(existe_identificador(tokens[var_aum][1])) {
+				posicion_variable = variable_index(tokens[var_aum][1]);
+				var_aum++;
+			} else {
+				cout << "Error semantico 109. Variable " << tokens[var_aum][1] << " no encontrada" << endl;
+				return false;
+			}
 			if(tokens[var_aum][0] == "asignacion") {
 				var_aum++;
 				if(tokens[var_aum][0] == "identificador" or tokens[var_aum][0] == "digito") {
 					var_aum++;
 					if(tokens[var_aum][0] == "cierre") {
 						var_aum++;
-						cout << "asignacion valida" << endl;
+						// cout << "asignacion valida" << endl;
 						i = num_token;
 					} else {
 						while(
-							(tokens[var_aum][0] == "suma" or tokens[var_aum][0] == "resta" or tokens[var_aum][0] == "division" or tokens[var_aum][0] == "multiplicacion") && 
+							(tokens[var_aum][0] == "suma" or tokens[var_aum][0] == "resta" or tokens[var_aum][0] == "multiplicacion") && 
 							(tokens[var_aum+1][0] == "identificador" or tokens[var_aum+1][0] == "digito")) {
 							var_aum += 2;
 						}
 						if(tokens[var_aum][0] == "cierre") {
 							var_aum++;
-							cout << "asignacion valida" << endl;
+							// cout << "asignacion valida" << endl;
 							i = num_token;
 						} else {
 							cout << "Error 107: Se esperaba un ;" << endl;
+							return false;
+						}
+					}
+				} else if(tokens[var_aum][0] == "comilla" and variables[posicion_variable][0] == "string"){
+					var_aum++;
+					if(tokens[var_aum][0] == "identificador" or tokens[var_aum][0] == "digito"){
+						dato = tokens[var_aum][1];
+						var_aum++;
+						if(tokens[var_aum][0] == "comilla"){
+							var_aum++;
+							if(tokens[var_aum][0] == "cierre"){
+								var_aum++;
+								// cout << "Valor de " << dato << " correctamente modificado." << endl;
+								i = num_token;
+							} else {
+								cout << "Error sintactico: Se esperaba un ; " << endl;
+								return false;
+							}
+						} else {
+							cout << "Error sintactico: Se esperaba una comilla en la línea " << endl;
 							return false;
 						}
 					}
@@ -758,9 +826,15 @@ bool si(string tokens[50][2], int num_token) {
 	bool valido = false;
 
 	int cant_ifs = 0;
+	int posicion_variable = 0;
+	int posicion_variable2 = 0;
+
+	string tipo1 = "";
+	string tipo2 = "";
 
 	// Variable aumento.
 	int var_aum = 0;
+
 
 	for(int j = 0; j < num_token ; j++) {
 		if(tokens[j][0] == "si") {
@@ -773,10 +847,44 @@ bool si(string tokens[50][2], int num_token) {
 				}
 				// Cicle parentesis.
 				if(tokens[j+var_aum][0] == "identificador") {
-					var_aum++;
+					bool id = existe_identificador(tokens[j+var_aum][1]);
+					if(!id) {
+						cout << "Error semantico: Variable " << tokens[j+var_aum][0] << " no existe" << endl;
+						return false;
+					} else {
+						posicion_variable = variable_index(tokens[j+var_aum][1]);
+						tipo1 = variables[posicion_variable][0];
+						var_aum++;
+					}
+					
 					if(tokens[j+var_aum][0] == "condicion") {
 						var_aum++;
 						if(tokens[j+var_aum][0] == "digito" or tokens[j+var_aum][0] == "identificador") {
+							if(tokens[j+var_aum][0] == "identificador") {
+								bool id_2 = existe_identificador(tokens[j+var_aum][1]); 
+								if(!id_2) {
+									cout << "Error semantico: La variable " << tokens[j+var_aum][1] << " no existe, en linea " << endl;
+									return false;
+								} else {
+									posicion_variable2 = variable_index(tokens[j+var_aum][1]);
+									tipo2 = variables[posicion_variable2][0];
+									if(tipo1 == tipo2) {
+										// cout << "Tipos de datos iguales, condicion valida." << endl;
+									} else if(tipo1 != tipo2) {
+										cout << "Error semantico: Tipos de datos no coinciden en la línea " << endl;
+										return false;
+									}
+								} 
+							} else if(tokens[j+var_aum][0] == "digito")  {
+								if(tipo1 == "int") {
+									// cout << "Tipos de datos aceptados." << endl;
+								} else {
+									cout << "Error semantico: Tipos de datos no coinciden en la línea " << endl;
+									return false;
+								}
+							}
+
+
 							var_aum++;
 							if(tokens[j+var_aum][0] == "parentesis_cierra") {
 								var_aum++;
@@ -828,17 +936,83 @@ bool si(string tokens[50][2], int num_token) {
 									}
 								} 
 							}
-						} 
- 					} else {
+						} else if(tokens[j+var_aum][0] == "comilla") {
+							var_aum++;
+							while(tokens[j+var_aum][0] != "comilla") {
+								var_aum++;
+							}
+							if(tokens[j+var_aum][0] == "comilla" and tipo1 == "string") {
+								cout << "Una condicion de string encontrada" << endl;
+
+								
+								var_aum++;
+								if(tokens[j+var_aum][0] == "parentesis_cierra") {
+									var_aum++;
+									while(tokens[j+var_aum][0] == "parentesis_cierra") {
+										num_par--;
+										var_aum++;
+									}
+									if(num_par != 0) {
+										cout << "Error 104: Cantidad de parentesis incorrecta. " << endl;
+										if(num_par > 0) {
+											cout << "Existe un ( de más" << endl;
+										} else if(num_par < 0) {
+											cout << "Existe un ) de más" << endl;
+										}
+										return false;
+									}
+									if(tokens[j+var_aum][0] == "llave_abre") {
+										var_aum++;
+										while(tokens[j+var_aum][0] == "llave_abre") {
+											num_llaves++;
+											var_aum++;
+										}
+										// Ciclo de llaves.
+										inicio_expresion = j+var_aum;
+										for(int k = j+var_aum; k < num_token; k++) {
+											if(tokens[k][0] == "llave_cierra") {
+												var_aum++;
+												while(tokens[j+var_aum][0] == "llave_cierra") {
+													num_llaves--;
+													var_aum++;
+												}
+												if(num_llaves == 0) {
+													termino_expresion = k;
+													valido = true;
+													cant_ifs++;
+													j = num_token;
+													cout << "if valido" << endl;
+													break;
+												} else {
+													cout << "Error 103: Numero de llaves incorrecto. " ;
+													if(num_llaves > 0) {
+														cout << "Existe un numero mayor de {, en la posicion " << j+var_aum << endl;
+													} else if(num_llaves < 0) {
+														cout << "Existe un numero mayor de }, en la posicion " << j+var_aum << endl;
+													}
+													return false;
+												}
+											}
+										}
+									} 
+								}
+
+
+							} else if(tipo1 != "string") {
+								cout << "Error semantico: Tipos de datos no coinciden, se esparaba un string en la linea " << endl;
+								return false;
+							}
+						}
+					} else {
 						// Error cuando la condición no sea válida.
 						cout << "Error 101: Se espera una condición, y se obtuvo " << tokens[j+var_aum][1] 
-							 << " en la posicion " << j+var_aum << endl;
+							<< " en la posicion " << j+var_aum << endl;
 						return false;
 					}
 				} else {
 					// Error cuando el primer parámetro no sea válido.
 					cout << "Error 100: Parametro no válido en la posicion " 
-						 << j+var_aum << " se espera una variable y se obtuvo " << tokens[j+var_aum][1] << endl;
+							<< j+var_aum << " se espera una variable y se obtuvo " << tokens[j+var_aum][1] << endl;
 					return false;
 				}
 			} else {
@@ -847,7 +1021,6 @@ bool si(string tokens[50][2], int num_token) {
 				return false;
 			}
 		}
-
 	}
 
 	// cout << "Numero de ifs recorridos: " << cant_ifs << endl;
@@ -855,11 +1028,11 @@ bool si(string tokens[50][2], int num_token) {
 
 	int x = 0;
 	num_tokens_verificar = 0;
-	for(int m = inicio_expresion; m < termino_expresion+1; m++) {
+	for(int m = inicio_expresion; m < termino_expresion; m++) {
 		tokens_verificar[x][0] = tokens[m][0];
 		tokens_verificar[x][1] = tokens[m][1];
 		num_tokens_verificar += 1;
-		// cout << tokens_verificar[x][0] << " " << tokens_verificar[x][1] << endl;
+		cout << tokens_verificar[x][0] << " " << tokens_verificar[x][1] << endl;
 		x++;
 	}
 
@@ -1130,4 +1303,25 @@ bool mientras(string tokens[50][2], int num_token) {
 	
 	return valido;
 
+}
+
+// Verificar si el identificador ya existe,
+bool existe_identificador(string id) {
+	for(int i = 0; i < num_variables; i++){
+		if(variables[i][1] == id) {
+			// cout << "Se encontró" << endl;
+			return true;
+		}
+	}
+	return false;
+}
+
+int variable_index(string id){
+	for(int i = 0; i < num_variables; i++){
+		if(variables[i][1] == id) {
+			// cout << "Se encontró" << endl;
+			return i;
+		}
+	}
+	return -1;
 }

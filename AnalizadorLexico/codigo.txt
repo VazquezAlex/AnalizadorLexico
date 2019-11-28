@@ -1,2 +1,8 @@
-string x := "hola";
-string a := "adios";
+string t := "ijaisj";
+
+int c := 1;
+int a := 2;
+
+si(c==1) {
+	t := 2;
+}
